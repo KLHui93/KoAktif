@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KoAktif! - SJKC Kg Baru Pajam</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: #f0f4f8;
+    }
+    .tab-active {
+      background-color: #3b82f6;
+      color: white;
+    }
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <!-- Login Page -->
+  <div id="loginPage" class="container mx-auto px-4 py-8">
+    <div class="max-w-md mx-auto mt-10 p-6 border shadow-xl rounded-xl bg-white">
+      <div class="text-center mb-6">
+        <div class="inline-block p-3 rounded-full bg-blue-100 mb-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-800">KoAktif!</h2>
+        <p class="text-gray-600 mt-1">Sistem Rekod Penyertaan Kokurikulum SJKC Kg Baru Pajam</p>
+      </div>
+
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Emel Guru</label>
+          <input id="email" type="email" placeholder="contoh@moe-dl.edu.my" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500" required />
+        </div>
+        
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Kata Laluan</label>
+          <input id="password" type="password" placeholder="Kata laluan anda" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500" required />
+        </div>
+        
+        <button type="submit" id="loginButton" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center">
+          <span>Log Masuk</span>
+          <span id="loginLoading" class="loading ml-2 hidden"></span>
+        </button>
+        
+        <p id="loginStatus" class="text-center text-red-600 mt-1 text-sm"></p>
+        
+        <div class="text-center mt-4">
+          <button type="button" id="forgotPasswordBtn" class="text-blue-600 text-sm hover:underline">Lupa kata laluan?</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main Application Page -->
+  <div id="appPage" class="container mx-auto px-4 py-8 hidden">
+    <header class="mb-8">
+      <div class="flex flex-col md:flex-row justify-between items-center bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl shadow-lg p-6 text-white">
+        <div>
+          <h1 class="text-3xl font-bold">KoAktif!</h1>
+          <p class="text-blue-100">Sistem Rekod Penyertaan Kokurikulum SJKC Kg Baru Pajam</p>
+        </div>
+        <div class="mt-4 md:mt-0">
+          <div id="userInfo" class="text-right">
+            <p id="userDisplayName" class="font-semibold"></p>
+            <button id="logoutBtn" class="text-sm text-blue-200 hover:text-white">Log Keluar</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex flex-col md:flex-row gap-6">
+      <!-- Navigation Tabs -->
+      <div class="w-full md:w-1/4">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <div class="p-4 bg-blue-50 border-b border-blue-100">
+            <h2 class="font-bold text-blue-800">Menu Utama</h2>
+          </div>
+          <nav class="p-2">
+            <button id="tabDaftarBtn" class="tab-active w-full text-left px-4 py-3 rounded-lg mb-2 transition hover:bg-blue-50">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Pengisian Data
+            </button>
+            <button id="tabMuridBtn" class="w-full text-left px-4 py-3 rounded-lg mb-2 transition hover:bg-blue-50">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              Dashboard Murid
+            </button>
+            <button id="tabGuruBtn" class="w-full text-left px-4 py-3 rounded-lg transition hover:bg-blue-50">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              Dashboard Guru
+            </button>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="w-full md:w-3/4">
+        <!-- Daftar Penyertaan Tab -->
+        <div id="tabDaftar" class="fade-in">
+          <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-4 bg-blue-50 border-b border-blue-100">
+              <h2 class="font-bold text-blue-800">Pengisian Data Penyertaan</h2>
+            </div>
+            <form id="pajskForm" class="p-6 space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label for="sesiAkademik" class="block text-sm font-medium text-gray-700 mb-1">Sesi Akademik</label>
+                  <input type="number" id="sesiAkademik" min="2020" max="2050" class="block w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500" required>
+                </div>
+                <div>
+                  <label for="guru" class="block text-sm font-medium text-gray-700 mb-1">Nama Guru</label>
+                  <input type="text" id="guru" placeholder="Nama Guru Penasihat" class="block w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500 bg-gray-100" readonly>
+                </div>
+              </div>
+
+              <div>
+                <label for="pertandingan" class="block text-sm font-medium text-gray-700 mb-1">Nama Pertandingan/Aktiviti</label>
+                <input type="text" id="pertandingan" placeholder="Nama Pertandingan atau Aktiviti" class="block w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500" required>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label for="kategori" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                  <select id="kategori" class="block w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500">
+                    <option value="Kelab dan Persatuan">Kelab dan Persatuan</option>
+                    <option value="Unit Beruniform">Unit Beruniform</option>
+                    <option value="Sukan dan Permainan">Sukan dan Permainan</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="peringkat" class="block text-sm font-medium text-gray-700 mb-1">Peringkat</label>
+                  <select id="peringkat" class="block w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500">
+                    <option value="Sekolah">Sekolah</option>
+                    <option value="Daerah">Daerah</option>
+                    <option value="Negeri">Negeri</option>
+                    <option value="Kebangsaan">Kebangsaan</option>
+                    <option value="Antarabangsa">Antarabangsa</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Student List Section -->
+              <div class="mt-6">
+                <div class="flex justify-between items-center mb-2">
+                  <label class="block text-sm font-medium text-gray-700">Senarai Nama Murid</label>
+                  <div>
+                    <label for="studentCount" class="text-sm text-gray-600 mr-2">Bilangan Murid:</label>
+                    <select id="studentCount" class="border border-gray-300 p-1 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500">
+                      <option value="1" selected>1</option>
+                      <option value="5">5</option>
+                      <option value="10">10</option>
+                      <option value="15">15</option>
+                      <option value="20">20</option>
+                      <option value="25">25</option>
+                      <option value="30">30</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <!-- Loading indicator for student data -->
+                <div id="loadingStudents" class="text-center py-4 hidden">
+                  <div class="inline-block w-6 h-6 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+                  <p class="mt-1 text-sm text-gray-600">Memuat turun data murid...</p>
+                </div>
+                
+                <!-- Student Entries -->
+                <div id="studentEntries" class="space-y-4">
+                  <!-- Student entries will be added here -->
+                </div>
+                
+                <!-- Add More Students Button -->
+                <div class="mt-4">
+                  <button type="button" id="addMoreStudentsBtn" class="w-full py-2 border border-blue-300 text-blue-600 rounded-lg hover:bg-blue-50 transition flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                    </svg>
+                    Tambah Murid
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex justify-end space-x-2 pt-4">
+                <button type="reset" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Reset</button>
+                <button type="submit" id="submitBtn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition flex items-center">
+                  <span>Hantar</span>
+                  <span id="submitLoading" class="loading ml-2 hidden"></span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Dashboard Murid Tab (Unified) -->
+        <div id="tabMurid" class="hidden fade-in">
+          <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-4 bg-blue-50 border-b border-blue-100">
+              <h2 class="font-bold text-blue-800">Dashboard Murid</h2>
+            </div>
+            <div class="p-6">
+              <!-- Search and Filter -->
+              <div class="mb-6">
+                <div class="flex flex-col md:flex-row gap-3">
+                  <div class="w-full md:w-1/3">
+                    <select id="muridKategori" class="block w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500">
+                      <option value="">Semua Kategori</option>
+                      <option value="Kelab dan Persatuan">Kelab dan Persatuan</option>
+                      <option value="Unit Beruniform">Unit Beruniform</option>
+                      <option value="Sukan dan Permainan">Sukan dan Permainan</option>
+                    </select>
+                  </div>
+                  <div class="w-full md:w-1/3">
+                    <select id="muridKelas" class="block w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500">
+                      <option value="">Semua Kelas</option>
+                      <option value="4A">4A</option>
+                      <option value="5A">5A</option>
+                      <option value="6A">6A</option>
+                    </select>
+                  </div>
+                  <div class="w-full md:w-1/3">
+                    <input type="text" id="muridSearch" placeholder="Cari nama murid..." class="block w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Top Students Section -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
+                  <h3 class="text-blue-800 font-semibold mb-3">Penglibatan Tertinggi</h3>
+                  <div id="topMuridParticipation" class="space-y-2">
+                    <div class="flex items-center justify-between bg-white p-2 rounded-md">
+                      <div class="flex items-center">
+                        <div class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2">1</div>
+                        <span>Memuat data...</span>
+                      </div>
+                      <span class="font-semibold">-</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
+                  <h3 class="text-green-800 font-semibold mb-3">Pencapaian Tertinggi</h3>
+                  <div id="topMuridAchievements" class="space-y-2">
+                    <div class="flex items-center justify-between bg-white p-2 rounded-md">
+                      <div class="flex items-center">
+                        <div class="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2">1</div>
+                        <span>Memuat data...</span>
+                      </div>
+                      <span class="font-semibold">-</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Student Analysis Table -->
+              <div>
+                <h3 class="font-semibold text-gray-700 mb-3">Analisis Terperinci Murid</h3>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead>
+                      <tr class="bg-gray-50">
+                        <th class="py-2 px-4 border-b text-left">Nama Murid</th>
+                        <th class="py-2 px-4 border-b text-left">Kelas</th>
+                        <th class="py-2 px-4 border-b text-center">Jumlah Penyertaan</th>
+                        <th class="py-2 px-4 border-b text-center">Penglibatan Tertinggi</th>
+                        <th class="py-2 px-4 border-b text-center">Pencapaian Tertinggi</th>
+                      </tr>
+                    </thead>
+                    <tbody id="muridAnalysisTable">
+                      <tr>
+                        <td colspan="5" class="py-4 text-center text-gray-500">Memuat data analisis murid...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Dashboard Guru Tab -->
+        <div id="tabGuru" class="hidden fade-in">
+          <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-4 bg-blue-50 border-b border-blue-100">
+              <h2 class="font-bold text-blue-800">Dashboard Guru</h2>
+            </div>
+            <div class="p-6">
+              <!-- Search and Filter -->
+              <div class="mb-6">
+                <div class="flex flex-col md:flex-row gap-3">
+                  <div class="w-full md:w-1/2">
+                    <select id="guruSesiAkademik" class="block w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500">
+                      <option value="">Semua Sesi Akademik</option>
+                      <option value="2023">2023</option>
+                      <option value="2022">2022</option>
+                      <option value="2021">2021</option>
+                    </select>
+                  </div>
+                  <div class="w-full md:w-1/2">
+                    <input type="text" id="guruSearch" placeholder="Cari nama guru..." class="block w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Teacher Analysis Table -->
+              <div>
+                <h3 class="font-semibold text-gray-700 mb-3">Analisis Pengisian Mengikut Guru</h3>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead>
+                      <tr class="bg-gray-50">
+                        <th class="py-2 px-4 border-b text-left">Nama Guru</th>
+                        <th class="py-2 px-4 border-b text-center">Jumlah Aktiviti</th>
+                        <th class="py-2 px-4 border-b text-center">Jumlah Penyertaan</th>
+                        <th class="py-2 px-4 border-b text-center">Terakhir Dikemaskini</th>
+                        <th class="py-2 px-4 border-b text-center">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody id="guruAnalysisTable">
+                      <tr>
+                        <td colspan="5" class="py-4 text-center text-gray-500">Memuat data analisis guru...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for viewing student details -->
+  <div id="studentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div class="p-4 bg-blue-50 border-b border-blue-100 flex justify-between items-center">
+        <h2 class="font-bold text-blue-800">Maklumat Penglibatan Murid</h2>
+        <button id="closeStudentModal" class="text-gray-500 hover:text-gray-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="p-6" id="studentModalContent">
+        <!-- Content will be dynamically inserted here -->
+      </div>
+      <div class="p-4 bg-gray-50 border-t border-gray-200 flex justify-end">
+        <button id="closeStudentModalBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for viewing teacher details -->
+  <div id="guruModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div class="p-4 bg-blue-50 border-b border-blue-100 flex justify-between items-center">
+        <h2 class="font-bold text-blue-800">Maklumat Aktiviti Guru</h2>
+        <button id="closeGuruModal" class="text-gray-500 hover:text-gray-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="p-6" id="guruModalContent">
+        <!-- Content will be dynamically inserted here -->
+      </div>
+      <div class="p-4 bg-gray-50 border-t border-gray-200 flex justify-end">
+        <button id="closeGuruModalBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgotPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
+      <div class="p-4 bg-blue-50 border-b border-blue-100 flex justify-between items-center">
+        <h2 class="font-bold text-blue-800">Reset Kata Laluan</h2>
+        <button id="closeForgotModal" class="text-gray-500 hover:text-gray-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="p-6">
+        <p class="text-gray-600 mb-4">Masukkan alamat emel anda untuk menerima pautan reset kata laluan.</p>
+        <input type="email" id="resetEmail" placeholder="Alamat Emel" class="w-full p-2 border border-gray-300 rounded-lg mb-4">
+        <div id="resetStatus" class="text-sm mb-4 hidden"></div>
+        <div class="flex justify-end">
+          <button id="sendResetBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Hantar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="toast" class="fixed bottom-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 flex items-center">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+    </svg>
+    <span id="toastMessage">Operasi berjaya!</span>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyA-gVaXnHUTT5s8jdi90X4Elfurd4i8rKk",
+      authDomain: "pajsk-sjkckgbp.firebaseapp.com",
+      projectId: "pajsk-sjkckgbp",
+      storageBucket: "pajsk-sjkckgbp.appspot.com",
+      messagingSenderId: "987908268258",
+      appId: "1:987908268258:web:80b70550e0a36019ef7ebb"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // DOM Elements - Login Page
+    const loginPage = document.getElementById('loginPage');
+    const appPage = document.getElementById('appPage');
+    const loginForm = document.getElementById('loginForm');
+    const loginLoading = document.getElementById('loginLoading');
+    const loginStatus = document.getElementById('loginStatus');
+    const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+    const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+    const closeForgotModal = document.getElementById('closeForgotModal');
+    const resetEmail = document.getElementById('resetEmail');
+    const sendResetBtn = document.getElementById('sendResetBtn');
+    const resetStatus = document.getElementById('resetStatus');
+
+    // DOM Elements - App Page
+    const tabDaftar = document.getElementById('tabDaftar');
+    const tabMurid = document.getElementById('tabMurid');
+    const tabGuru = document.getElementById('tabGuru');
+    const tabDaftarBtn = document.getElementById('tabDaftarBtn');
+    const tabMuridBtn = document.getElementById('tabMuridBtn');
+    const tabGuruBtn = document.getElementById('tabGuruBtn');
+    const pajskForm = document.getElementById('pajskForm');
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+    const submitBtn = document.getElementById('submitBtn');
+    const submitLoading = document.getElementById('submitLoading');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userDisplayName = document.getElementById('userDisplayName');
+    const guruInput = document.getElementById('guru');
+    const loadingStudents = document.getElementById('loadingStudents');
+    const studentEntries = document.getElementById('studentEntries');
+    const addMoreStudentsBtn = document.getElementById('addMoreStudentsBtn');
+    const studentCount = document.getElementById('studentCount');
+    
+    // Murid Dashboard Elements
+    const muridKategori = document.getElementById('muridKategori');
+    const muridKelas = document.getElementById('muridKelas');
+    const muridSearch = document.getElementById('muridSearch');
+    const topMuridParticipation = document.getElementById('topMuridParticipation');
+    const topMuridAchievements = document.getElementById('topMuridAchievements');
+    const muridAnalysisTable = document.getElementById('muridAnalysisTable');
+    
+    // Guru Dashboard Elements
+    const guruSesiAkademik = document.getElementById('guruSesiAkademik');
+    const guruSearch = document.getElementById('guruSearch');
+    const guruAnalysisTable = document.getElementById('guruAnalysisTable');
+    
+    // Modal Elements
+    const studentModal = document.getElementById('studentModal');
+    const studentModalContent = document.getElementById('studentModalContent');
+    const closeStudentModal = document.getElementById('closeStudentModal');
+    const closeStudentModalBtn = document.getElementById('closeStudentModalBtn');
+    const guruModal = document.getElementById('guruModal');
+    const guruModalContent = document.getElementById('guruModalContent');
+    const closeGuruModal = document.getElementById('closeGuruModal');
+    const closeGuruModalBtn = document.getElementById('closeGuruModalBtn');
+
+    // Global variables
+    let allStudents = {};
+    let currentUserEmail = '';
+    let muridAnalysisData = [];
+    let guruAnalysisData = [];
+    let allMuridData = []; // Store all student data for filtering
+    let allActivitiesData = []; // Store all activities data for filtering
+    let allGuruData = []; // Store all teacher data for filtering
+    let allTeachers = []; // Store all teachers from the guru collection
+
+    // Show toast notification
+    function showToast(message, type = 'success') {
+      toastMessage.textContent = message;
+      
+      if (type === 'success') {
+        toast.classList.remove('bg-red-600');
+        toast.classList.add('bg-green-600');
+      } else {
+        toast.classList.remove('bg-green-600');
+        toast.classList.add('bg-red-600');
+      }
+      
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+
+    // Fetch all students from Firestore
+    async function getSenaraiMurid() {
+      try {
+        loadingStudents.classList.remove('hidden');
+        
+        const muridRef = db.collection('murid');
+        const muridSnapshot = await muridRef.get();
+        
+        // Group students by class
+        allStudents = {};
+        
+        muridSnapshot.forEach(doc => {
+          const data = doc.data();
+          const docId = doc.id;
+          const kelas = data.kelas || '';
+          const nama = data.nama || '';
+          
+          if (!allStudents[kelas]) {
+            allStudents[kelas] = [];
+          }
+          
+          allStudents[kelas].push({
+            id: docId,
+            nama: nama,
+            kelas: kelas
+          });
+        });
+        
+        // Sort students by name within each class
+        Object.keys(allStudents).forEach(kelas => {
+          allStudents[kelas].sort((a, b) => a.nama.localeCompare(b.nama));
+        });
+        
+        console.log("Loaded students by class:", allStudents);
+        
+        // Add initial student entries based on selected count
+        const count = parseInt(studentCount.value);
+        for (let i = 0; i < count; i++) {
+          addStudentEntry();
+        }
+        
+      } catch (err) {
+        console.error("Error fetching student data:", err);
+        showToast("Ralat memuat data murid", "error");
+      } finally {
+        loadingStudents.classList.add('hidden');
+      }
+    }
+
+    // Add student entry
+    function addStudentEntry() {
+      const studentCount = document.querySelectorAll('.student-entry').length + 1;
+      
+      const entryDiv = document.createElement('div');
+      entryDiv.className = 'student-entry border border-gray-300 rounded-lg p-4 bg-gray-50 fade-in';
+      
+      entryDiv.innerHTML = `
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="font-medium text-gray-700">Murid ${studentCount}</h3>
+          <button type="button" class="text-red-500 hover:text-red-700 clear-student-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-sm text-gray-600 mb-1">Kelas</label>
+            <select class="student-class block w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500">
+              <option value="">Pilih Kelas</option>
+              <option value="4A">4A</option>
+              <option value="5A">5A</option>
+              <option value="6A">6A</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600 mb-1">Nama Murid</label>
+            <select class="student-name block w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500" disabled>
+              <option value="">Pilih Kelas Dahulu</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600 mb-1">Pencapaian</label>
+            <select class="student-achievement block w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500">
+              <option value="">Pilih Pencapaian</option>
+              <option value="Tempat Pertama">Tempat Pertama</option>
+              <option value="Tempat Kedua">Tempat Kedua</option>
+              <option value="Tempat Ketiga">Tempat Ketiga</option>
+              <option value="Tempat Keempat">Tempat Keempat</option>
+              <option value="Tempat Kelima">Tempat Kelima</option>
+              <option value="Penyertaan">Penyertaan</option>
+            </select>
+          </div>
+        </div>
+      `;
+      
+      studentEntries.appendChild(entryDiv);
+      
+      // Add event listener to class selection
+      const classSelect = entryDiv.querySelector('.student-class');
+      classSelect.addEventListener('change', function() {
+        const selectedClass = this.value;
+        const nameSelect = entryDiv.querySelector('.student-name');
+        
+        // Reset and disable name select if no class is selected
+        if (!selectedClass) {
+          nameSelect.innerHTML = '<option value="">Pilih Kelas Dahulu</option>';
+          nameSelect.disabled = true;
+          return;
+        }
+        
+        // Populate student names for the selected class
+        populateStudentNames(nameSelect, selectedClass);
+      });
+      
+      // Add event listener to clear button
+      const clearBtn = entryDiv.querySelector('.clear-student-btn');
+      clearBtn.addEventListener('click', function() {
+        const classSelect = entryDiv.querySelector('.student-class');
+        const nameSelect = entryDiv.querySelector('.student-name');
+        const achievementSelect = entryDiv.querySelector('.student-achievement');
+        
+        // Reset all fields
+        classSelect.value = '';
+        nameSelect.innerHTML = '<option value="">Pilih Kelas Dahulu</option>';
+        nameSelect.disabled = true;
+        achievementSelect.value = '';
+      });
+    }
+
+    // Populate student names dropdown based on selected class
+    function populateStudentNames(nameSelect, selectedClass) {
+      nameSelect.innerHTML = '<option value="">Pilih Nama Murid</option>';
+      
+      if (allStudents[selectedClass] && allStudents[selectedClass].length > 0) {
+        allStudents[selectedClass].forEach(student => {
+          const option = document.createElement('option');
+          option.value = student.id;
+          option.textContent = student.nama;
+          nameSelect.appendChild(option);
+        });
+        
+        nameSelect.disabled = false;
+      } else {
+        nameSelect.innerHTML = '<option value="">Tiada murid dalam kelas ini</option>';
+        nameSelect.disabled = true;
+      }
+    }
+
+    // Add multiple student entries based on selected count
+    studentCount.addEventListener('change', function() {
+      const count = parseInt(this.value);
+      
+      // Clear existing entries
+      studentEntries.innerHTML = '';
+      
+      // Add new entries
+      for (let i = 0; i < count; i++) {
+        addStudentEntry();
+      }
+    });
+
+    // Add more student entries
+    addMoreStudentsBtn.addEventListener('click', function() {
+      addStudentEntry();
+    });
+
+    // Login functionality
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      
+      if (!email || !password) {
+        loginStatus.textContent = 'Sila masukkan emel dan kata laluan';
+        return;
+      }
+      
+      // Show loading indicator
+      loginForm.querySelector('button[type="submit"]').disabled = true;
+      loginLoading.classList.remove('hidden');
+      loginStatus.textContent = '';
+      
+      try {
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        currentUserEmail = user.email;
+        
+        // Fetch nama guru dari Firestore
+        const guruRef = db.collection("guru");
+        const snapshot = await guruRef.where("email", "==", user.email).get();
+        
+        if (!snapshot.empty) {
+          const namaGuru = snapshot.docs[0].data().nama;
+          localStorage.setItem("namaGuru", namaGuru); // Simpan untuk borang
+          showDashboard(namaGuru);
+        } else {
+          // If no guru record found, use email as name
+          const namaGuru = user.email.split('@')[0];
+          localStorage.setItem("namaGuru", namaGuru);
+          showDashboard(namaGuru);
+          
+          // Create a new guru record
+          await db.collection("guru").add({
+            email: user.email,
+            nama: namaGuru,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        let errorMessage = 'Gagal log masuk';
+        
+        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+          errorMessage = 'Emel atau kata laluan tidak sah';
+        } else if (error.code === 'auth/too-many-requests') {
+          errorMessage = 'Terlalu banyak percubaan. Sila cuba sebentar lagi';
+        }
+        
+        loginStatus.textContent = errorMessage;
+      } finally {
+        // Hide loading indicator
+        loginForm.querySelector('button[type="submit"]').disabled = false;
+        loginLoading.classList.add('hidden');
+      }
+    });
+
+    // Show dashboard function
+    async function showDashboard(namaGuru) {
+      loginPage.classList.add('hidden');
+      appPage.classList.remove('hidden');
+      userDisplayName.textContent = namaGuru;
+      guruInput.value = namaGuru;
+      
+      // Set default sesi akademik to current year
+      const currentYear = new Date().getFullYear();
+      document.getElementById('sesiAkademik').value = currentYear;
+      
+      // Load all students data
+      await getSenaraiMurid();
+      
+      // Load all teachers
+      await loadAllTeachers();
+      
+      // Load analysis data
+      await Promise.all([
+        loadMuridAnalysis(),
+        loadGuruAnalysis()
+      ]);
+      
+      showToast('Berjaya log masuk!');
+    }
+
+    // Load all teachers from Firestore
+    async function loadAllTeachers() {
+      try {
+        const guruRef = db.collection('guru');
+        const guruSnapshot = await guruRef.get();
+        
+        allTeachers = [];
+        
+        guruSnapshot.forEach(doc => {
+          const data = doc.data();
+          allTeachers.push({
+            id: doc.id,
+            name: data.nama || 'Tidak Dinyatakan',
+            email: data.email || '',
+            activityCount: 0,
+            studentCount: 0,
+            lastUpdate: null
+          });
+        });
+        
+        // Sort teachers by name
+        allTeachers.sort((a, b) => a.name.localeCompare(b.name));
+        
+      } catch (error) {
+        console.error('Error loading teachers:', error);
+      }
+    }
+
+    // Password reset functionality
+    forgotPasswordBtn.addEventListener('click', () => {
+      forgotPasswordModal.classList.remove('hidden');
+      resetEmail.value = document.getElementById('email').value || '';
+      resetStatus.classList.add('hidden');
+    });
+
+    closeForgotModal.addEventListener('click', () => {
+      forgotPasswordModal.classList.add('hidden');
+    });
+
+    sendResetBtn.addEventListener('click', async () => {
+      const email = resetEmail.value.trim();
+      
+      if (!email) {
+        resetStatus.textContent = 'Sila masukkan alamat emel';
+        resetStatus.classList.remove('hidden', 'text-green-600');
+        resetStatus.classList.add('text-red-600');
+        return;
+      }
+      
+      sendResetBtn.disabled = true;
+      sendResetBtn.textContent = 'Menghantar...';
+      
+      try {
+        await auth.sendPasswordResetEmail(email);
+        resetStatus.textContent = 'Pautan reset kata laluan telah dihantar ke emel anda';
+        resetStatus.classList.remove('hidden', 'text-red-600');
+        resetStatus.classList.add('text-green-600');
+        
+        setTimeout(() => {
+          forgotPasswordModal.classList.add('hidden');
+        }, 3000);
+      } catch (error) {
+        console.error('Password reset error:', error);
+        let errorMessage = 'Gagal menghantar pautan reset';
+        
+        if (error.code === 'auth/user-not-found') {
+          errorMessage = 'Emel tidak dijumpai';
+        }
+        
+        resetStatus.textContent = errorMessage;
+        resetStatus.classList.remove('hidden', 'text-green-600');
+        resetStatus.classList.add('text-red-600');
+      } finally {
+        sendResetBtn.disabled = false;
+        sendResetBtn.textContent = 'Hantar';
+      }
+    });
+
+    // Auth state change listener
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        // User is signed in
+        currentUserEmail = user.email;
+        const namaGuru = localStorage.getItem("namaGuru");
+        
+        if (namaGuru) {
+          showDashboard(namaGuru);
+        } else {
+          // If no name in localStorage, fetch from Firestore
+          try {
+            const guruRef = db.collection("guru");
+            const snapshot = await guruRef.where("email", "==", user.email).get();
+            
+            if (!snapshot.empty) {
+              const namaGuru = snapshot.docs[0].data().nama;
+              localStorage.setItem("namaGuru", namaGuru);
+              showDashboard(namaGuru);
+            } else {
+              const defaultName = user.email.split('@')[0];
+              localStorage.setItem("namaGuru", defaultName);
+              showDashboard(defaultName);
+            }
+          } catch (error) {
+            console.error("Error fetching guru data:", error);
+            const defaultName = user.email.split('@')[0];
+            localStorage.setItem("namaGuru", defaultName);
+            showDashboard(defaultName);
+          }
+        }
+      } else {
+        // User is signed out
+        currentUserEmail = '';
+        loginPage.classList.remove('hidden');
+        appPage.classList.add('hidden');
+      }
+    });
+
+    // Logout functionality
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await auth.signOut();
+        localStorage.removeItem("namaGuru");
+        showToast('Berjaya log keluar');
+      } catch (error) {
+        console.error('Logout error:', error);
+        showToast('Ralat semasa log keluar', 'error');
+      }
+    });
+
+    // Tab switching
+    tabDaftarBtn.addEventListener('click', () => switchTab('tabDaftar'));
+    tabMuridBtn.addEventListener('click', () => {
+      switchTab('tabMurid');
+      loadMuridAnalysis();
+    });
+    tabGuruBtn.addEventListener('click', () => {
+      switchTab('tabGuru');
+      loadGuruAnalysis();
+    });
+
+    function switchTab(tabId) {
+      // Hide all tabs
+      tabDaftar.classList.add('hidden');
+      tabMurid.classList.add('hidden');
+      tabGuru.classList.add('hidden');
+      
+      // Remove active class from all tab buttons
+      tabDaftarBtn.classList.remove('tab-active');
+      tabMuridBtn.classList.remove('tab-active');
+      tabGuruBtn.classList.remove('tab-active');
+      
+      // Show selected tab and activate button
+      document.getElementById(tabId).classList.remove('hidden');
+      
+      if (tabId === 'tabDaftar') {
+        tabDaftarBtn.classList.add('tab-active');
+      } else if (tabId === 'tabMurid') {
+        tabMuridBtn.classList.add('tab-active');
+      } else if (tabId === 'tabGuru') {
+        tabGuruBtn.classList.add('tab-active');
+      }
+    }
+
+    // Form submission
+    pajskForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Show loading indicator
+      submitBtn.disabled = true;
+      submitLoading.classList.remove('hidden');
+
+      const sesiAkademik = document.getElementById('sesiAkademik').value;
+      const namaGuru = document.getElementById('guru').value;
+      const pertandingan = document.getElementById('pertandingan').value;
+      const kategori = document.getElementById('kategori').value;
+      const peringkat = document.getElementById('peringkat').value;
+      
+      // Collect selected students
+      const selectedStudents = [];
+      const studentEntries = document.querySelectorAll('.student-entry');
+      
+      for (const entry of studentEntries) {
+        const classSelect = entry.querySelector('.student-class');
+        const nameSelect = entry.querySelector('.student-name');
+        const achievementSelect = entry.querySelector('.student-achievement');
+        
+        if (classSelect.value && nameSelect.value && achievementSelect.value) {
+          const studentClass = classSelect.value;
+          const studentId = nameSelect.value;
+          const studentName = nameSelect.options[nameSelect.selectedIndex].text;
+          const achievement = achievementSelect.value;
+          
+          selectedStudents.push({
+            id: studentId,
+            nama: studentName,
+            kelas: studentClass,
+            pencapaian: achievement
+          });
+        }
+      }
+
+      if (selectedStudents.length === 0) {
+        showToast('Sila pilih sekurang-kurangnya seorang murid dengan pencapaian', 'error');
+        submitBtn.disabled = false;
+        submitLoading.classList.add('hidden');
+        return;
+      }
+
+      try {
+        // Create data object
+        const data = {
+          sesi: sesiAkademik,
+          namaGuru,
+          namaPertandingan: pertandingan,
+          kategori,
+          peringkat,
+          murid: selectedStudents,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          createdBy: auth.currentUser.email
+        };
+        
+        // Save to Firestore
+        await db.collection('rekodPenyertaan').add(data);
+        
+        showToast('Rekod berjaya dihantar!');
+        
+        // Reset form but keep the current sesi akademik and guru name
+        const currentSesi = document.getElementById('sesiAkademik').value;
+        const currentGuru = document.getElementById('guru').value;
+        pajskForm.reset();
+        document.getElementById('sesiAkademik').value = currentSesi;
+        document.getElementById('guru').value = currentGuru;
+        
+        // Reset student entries
+        studentEntries.innerHTML = '';
+        const count = parseInt(studentCount.value);
+        for (let i = 0; i < count; i++) {
+          addStudentEntry();
+        }
+        
+        // Update analysis data
+        await Promise.all([
+          loadMuridAnalysis(),
+          loadGuruAnalysis()
+        ]);
+      } catch (error) {
+        console.error('Ralat ketika menyimpan ke Firestore:', error);
+        showToast('Terdapat ralat semasa menyimpan data.', 'error');
+      } finally {
+        // Hide loading indicator
+        submitBtn.disabled = false;
+        submitLoading.classList.add('hidden');
+      }
+    });
+
+    // Load Murid analysis from Firebase (unified)
+    async function loadMuridAnalysis() {
+      try {
+        // Show loading state
+        muridAnalysisTable.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-gray-500">Memuat data analisis murid...</td></tr>';
+        topMuridParticipation.innerHTML = '<div class="flex items-center justify-between bg-white p-2 rounded-md"><div class="flex items-center"><div class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2">-</div><span>Memuat data...</span></div><span class="font-semibold">-</span></div>';
+        topMuridAchievements.innerHTML = '<div class="flex items-center justify-between bg-white p-2 rounded-md"><div class="flex items-center"><div class="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2">-</div><span>Memuat data...</span></div><span class="font-semibold">-</span></div>';
+        
+        // Fetch all participation data from Firestore
+        const penyertaanRef = db.collection('rekodPenyertaan');
+        const penyertaanSnapshot = await penyertaanRef.get();
+        
+        if (penyertaanSnapshot.empty) {
+          muridAnalysisTable.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-gray-500">Tiada data penyertaan dijumpai</td></tr>';
+          topMuridParticipation.innerHTML = '<div class="p-3 text-center text-gray-500">Tiada data penyertaan</div>';
+          topMuridAchievements.innerHTML = '<div class="p-3 text-center text-gray-500">Tiada data pencapaian</div>';
+          return;
+        }
+        
+        // Process the data to get student statistics
+        const studentStats = {};
+        
+        penyertaanSnapshot.forEach(doc => {
+          const data = doc.data();
+          const students = data.murid || [];
+          const kategori = data.kategori || 'Tidak Dinyatakan';
+          
+          students.forEach(student => {
+            if (!studentStats[student.id]) {
+              studentStats[student.id] = {
+                id: student.id,
+                name: student.nama,
+                class: student.kelas,
+                participations: [],
+                achievements: [],
+                categories: {}
+              };
+            }
+            
+            // Add participation
+            studentStats[student.id].participations.push({
+              activity: data.namaPertandingan,
+              category: kategori,
+              level: data.peringkat,
+              achievement: student.pencapaian,
+              date: data.timestamp ? data.timestamp.toDate() : new Date(),
+              year: data.sesi
+            });
+            
+            // Add achievement (only if not "Penyertaan")
+            if (student.pencapaian !== 'Penyertaan') {
+              studentStats[student.id].achievements.push({
+                achievement: student.pencapaian,
+                level: data.peringkat,
+                category: kategori
+              });
+            }
+            
+            // Count categories
+            if (!studentStats[student.id].categories[kategori]) {
+              studentStats[student.id].categories[kategori] = 0;
+            }
+            studentStats[student.id].categories[kategori]++;
+          });
+        });
+        
+        // Convert to array and calculate metrics
+        allMuridData = Object.values(studentStats).map(student => {
+          // Calculate highest achievement
+          let highestAchievement = 'Tiada';
+          let highestLevel = '';
+          let highestCategory = '';
+          let combinedAchievement = 'Tiada';
+          
+          // Achievement ranking
+          const achievementRank = {
+            'Tempat Pertama': 5,
+            'Tempat Kedua': 4,
+            'Tempat Ketiga': 3,
+            'Tempat Keempat': 2,
+            'Tempat Kelima': 1
+          };
+          
+          // Level ranking
+          const levelRank = {
+            'Antarabangsa': 4,
+            'Kebangsaan': 3,
+            'Negeri': 2,
+            'Daerah': 1,
+            'Sekolah': 0
+          };
+          
+          let maxAchievementRank = -1;
+          let maxLevelRank = -1;
+          
+          // Only consider non-Penyertaan achievements
+          if (student.achievements.length > 0) {
+            student.achievements.forEach(a => {
+              const currentAchievementRank = achievementRank[a.achievement] || 0;
+              const currentLevelRank = levelRank[a.level] || 0;
+              
+              // First prioritize by level, then by achievement
+              if (currentLevelRank > maxLevelRank || 
+                  (currentLevelRank === maxLevelRank && currentAchievementRank > maxAchievementRank)) {
+                maxLevelRank = currentLevelRank;
+                maxAchievementRank = currentAchievementRank;
+                highestAchievement = a.achievement;
+                highestLevel = a.level;
+                highestCategory = a.category;
+                combinedAchievement = `${a.level} ${a.achievement}`;
+              }
+            });
+          }
+          
+          // Find highest level participation (regardless of achievement)
+          let highestParticipationLevel = '';
+          let highestParticipationActivity = '';
+          let combinedParticipation = 'Tiada';
+          
+          if (student.participations.length > 0) {
+            let maxPartLevelRank = -1;
+            
+            student.participations.forEach(p => {
+              const currentLevelRank = levelRank[p.level] || 0;
+              
+              if (currentLevelRank > maxPartLevelRank) {
+                maxPartLevelRank = currentLevelRank;
+                highestParticipationLevel = p.level;
+                highestParticipationActivity = p.activity;
+                combinedParticipation = p.level;
+              }
+            });
+          }
+          
+          // Find most active category
+          let mostActiveCategory = 'Tidak Dinyatakan';
+          let maxCategoryCount = 0;
+          
+          Object.entries(student.categories).forEach(([category, count]) => {
+            if (count > maxCategoryCount) {
+              mostActiveCategory = category;
+              maxCategoryCount = count;
+            }
+          });
+          
+          return {
+            id: student.id,
+            name: student.name,
+            class: student.class,
+            participationCount: student.participations.length,
+            highestAchievement: highestAchievement,
+            highestLevel: highestLevel,
+            highestCategory: highestCategory,
+            mostActiveCategory: mostActiveCategory,
+            combinedAchievement: combinedAchievement,
+            highestParticipationLevel: highestParticipationLevel,
+            highestParticipationActivity: highestParticipationActivity,
+            combinedParticipation: combinedParticipation,
+            participations: student.participations,
+            categories: student.categories,
+            hasAchievement: student.achievements.length > 0
+          };
+        });
+        
+        // Apply initial filters
+        filterMuridData();
+        
+        // Add event listeners for filters
+        muridKategori.addEventListener('change', filterMuridData);
+        muridKelas.addEventListener('change', filterMuridData);
+        muridSearch.addEventListener('input', filterMuridData);
+        
+      } catch (error) {
+        console.error('Error loading murid analysis:', error);
+        showToast('Ralat memuat turun analisis murid', 'error');
+        
+        muridAnalysisTable.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-red-500">Ralat memuat data</td></tr>';
+        topMuridParticipation.innerHTML = '<div class="p-3 text-center text-red-500">Ralat memuat data</div>';
+        topMuridAchievements.innerHTML = '<div class="p-3 text-center text-red-500">Ralat memuat data</div>';
+      }
+    }
+
+    // Filter murid data based on selected filters
+    function filterMuridData() {
+      const kategoriFilter = muridKategori.value;
+      const kelasFilter = muridKelas.value;
+      const searchFilter = muridSearch.value.toLowerCase();
+      
+      // Apply filters
+      let filteredData = [...allMuridData];
+      
+      if (kategoriFilter) {
+        filteredData = filteredData.filter(student => {
+          // Check if student has participations in the selected category
+          return student.participations.some(p => p.category === kategoriFilter);
+        });
+      }
+      
+      if (kelasFilter) {
+        filteredData = filteredData.filter(student => student.class === kelasFilter);
+      }
+      
+      if (searchFilter) {
+        filteredData = filteredData.filter(student => 
+          student.name.toLowerCase().includes(searchFilter)
+        );
+      }
+      
+      // Update murid analysis data
+      muridAnalysisData = filteredData;
+      
+      // Sort by participation count (descending) for top participation
+      const topParticipationData = [...filteredData]
+        .sort((a, b) => b.participationCount - a.participationCount)
+        .slice(0, 5);
+      
+      // Sort by achievement level (highest first) for top achievements
+      // Only include students with actual achievements (not "Penyertaan")
+      const topAchievementsData = [...filteredData]
+        .filter(student => student.hasAchievement)
+        .sort((a, b) => {
+          const levelRank = {
+            'Antarabangsa': 4,
+            'Kebangsaan': 3,
+            'Negeri': 2,
+            'Daerah': 1,
+            'Sekolah': 0
+          };
+          
+          const achievementRank = {
+            'Tempat Pertama': 5,
+            'Tempat Kedua': 4,
+            'Tempat Ketiga': 3,
+            'Tempat Keempat': 2,
+            'Tempat Kelima': 1
+          };
+          
+          const levelDiff = (levelRank[b.highestLevel] || 0) - (levelRank[a.highestLevel] || 0);
+          if (levelDiff !== 0) return levelDiff;
+          
+          return (achievementRank[b.highestAchievement] || 0) - (achievementRank[a.highestAchievement] || 0);
+        })
+        .slice(0, 5);
+      
+      // Sort by class and name for the main table
+      filteredData.sort((a, b) => {
+        if (a.class !== b.class) return a.class.localeCompare(b.class);
+        return a.name.localeCompare(b.name);
+      });
+      
+      // Render the data
+      renderTopParticipation(topParticipationData, topMuridParticipation);
+      renderTopAchievements(topAchievementsData, topMuridAchievements);
+      renderAnalysisTable(filteredData, muridAnalysisTable);
+    }
+
+    // Load Guru analysis from Firebase
+    async function loadGuruAnalysis() {
+      try {
+        // Show loading state
+        guruAnalysisTable.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-gray-500">Memuat data analisis guru...</td></tr>';
+        
+        // Fetch all participation data from Firestore
+        const penyertaanRef = db.collection('rekodPenyertaan');
+        const penyertaanSnapshot = await penyertaanRef.orderBy('timestamp', 'desc').get();
+        
+        // Process the data for guru dashboard
+        const guruStats = {};
+        
+        // Initialize with all teachers from the guru collection
+        allTeachers.forEach(teacher => {
+          guruStats[teacher.name] = {
+            name: teacher.name,
+            activityCount: 0,
+            studentCount: 0,
+            lastUpdate: null,
+            activities: []
+          };
+        });
+        
+        // Add data from activities
+        penyertaanSnapshot.forEach(doc => {
+          const data = doc.data();
+          const timestamp = data.timestamp ? data.timestamp.toDate() : new Date();
+          const students = data.murid || [];
+          const namaGuru = data.namaGuru || 'Tidak Dinyatakan';
+          const sesiAkademik = data.sesi || '';
+          
+          // Ensure this guru exists in our stats
+          if (!guruStats[namaGuru]) {
+            guruStats[namaGuru] = {
+              name: namaGuru,
+              activityCount: 0,
+              studentCount: 0,
+              lastUpdate: null,
+              activities: []
+            };
+          }
+          
+          guruStats[namaGuru].activityCount++;
+          guruStats[namaGuru].studentCount += students.length;
+          
+          if (!guruStats[namaGuru].lastUpdate || timestamp > guruStats[namaGuru].lastUpdate) {
+            guruStats[namaGuru].lastUpdate = timestamp;
+          }
+          
+          guruStats[namaGuru].activities.push({
+            id: doc.id,
+            name: data.namaPertandingan,
+            category: data.kategori,
+            level: data.peringkat,
+            studentCount: students.length,
+            date: timestamp,
+            year: sesiAkademik
+          });
+        });
+        
+        // Convert guru stats to array
+        allGuruData = Object.values(guruStats);
+        
+        // Apply initial filters
+        filterGuruData();
+        
+        // Add event listeners for filters
+        guruSesiAkademik.addEventListener('change', filterGuruData);
+        guruSearch.addEventListener('input', filterGuruData);
+        
+      } catch (error) {
+        console.error('Error loading guru analysis:', error);
+        showToast('Ralat memuat turun analisis guru', 'error');
+        
+        guruAnalysisTable.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-red-500">Ralat memuat data</td></tr>';
+      }
+    }
+
+    // Filter guru data based on selected filters
+    function filterGuruData() {
+      const sesiFilter = guruSesiAkademik.value;
+      const searchFilter = guruSearch.value.toLowerCase();
+      
+      // Apply filters
+      let filteredData = [...allGuruData];
+      
+      if (searchFilter) {
+        filteredData = filteredData.filter(guru => 
+          guru.name.toLowerCase().includes(searchFilter)
+        );
+      }
+      
+      // For sesi filter, we need to filter activities within each guru
+      if (sesiFilter) {
+        filteredData = filteredData.map(guru => {
+          const filteredActivities = guru.activities.filter(activity => 
+            activity.year === sesiFilter
+          );
+          
+          // Calculate new stats based on filtered activities
+          const newStats = {
+            ...guru,
+            activityCount: filteredActivities.length,
+            studentCount: filteredActivities.reduce((sum, act) => sum + act.studentCount, 0),
+            lastUpdate: filteredActivities.length > 0 ? 
+              filteredActivities.reduce((latest, act) => 
+                !latest || act.date > latest ? act.date : latest, null) : null,
+            activities: filteredActivities
+          };
+          
+          return newStats;
+        });
+      }
+      
+      // Sort by name
+      filteredData.sort((a, b) => a.name.localeCompare(b.name));
+      
+      // Render the guru analysis table
+      renderGuruAnalysisTable(filteredData);
+    }
+
+    // Render guru analysis table
+    function renderGuruAnalysisTable(data) {
+      guruAnalysisTable.innerHTML = '';
+      
+      if (data.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td colspan="5" class="py-4 text-center text-gray-500">Tiada data analisis guru</td>`;
+        guruAnalysisTable.appendChild(row);
+        return;
+      }
+      
+      data.forEach(guru => {
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-gray-50 cursor-pointer guru-row';
+        row.dataset.name = guru.name;
+        
+        row.innerHTML = `
+          <td class="py-2 px-4 border-b">${guru.name}</td>
+          <td class="py-2 px-4 border-b text-center">${guru.activityCount}</td>
+          <td class="py-2 px-4 border-b text-center">${guru.studentCount}</td>
+          <td class="py-2 px-4 border-b text-center">${guru.lastUpdate ? formatDate(guru.lastUpdate) : '-'}</td>
+          <td class="py-2 px-4 border-b text-center">
+            <button class="view-guru-btn px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition" ${guru.activityCount === 0 ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+              Lihat
+            </button>
+          </td>
+        `;
+        
+        guruAnalysisTable.appendChild(row);
+        
+        // Add click event to show guru details
+        const viewBtn = row.querySelector('.view-guru-btn');
+        if (guru.activityCount > 0) {
+          viewBtn.addEventListener('click', () => {
+            showGuruDetails(guru);
+          });
+        }
+      });
+    }
+
+    // Show guru details
+    function showGuruDetails(guru) {
+      // Sort activities by date (newest first)
+      const sortedActivities = [...guru.activities].sort((a, b) => 
+        b.date - a.date
+      );
+      
+      // Count activities by category
+      const categoryCount = {};
+      guru.activities.forEach(activity => {
+        if (!categoryCount[activity.category]) {
+          categoryCount[activity.category] = 0;
+        }
+        categoryCount[activity.category]++;
+      });
+      
+      // Count activities by level
+      const levelCount = {};
+      guru.activities.forEach(activity => {
+        if (!levelCount[activity.level]) {
+          levelCount[activity.level] = 0;
+        }
+        levelCount[activity.level]++;
+      });
+      
+      guruModalContent.innerHTML = `
+        <h3 class="text-xl font-bold mb-4">${guru.name}</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="bg-blue-50 p-3 rounded-lg border border-blue-200">
+            <p class="text-sm text-blue-800">Jumlah Aktiviti</p>
+            <p class="text-2xl font-bold text-blue-700">${guru.activityCount}</p>
+          </div>
+          <div class="bg-green-50 p-3 rounded-lg border border-green-200">
+            <p class="text-sm text-green-800">Jumlah Penyertaan Murid</p>
+            <p class="text-2xl font-bold text-green-700">${guru.studentCount}</p>
+          </div>
+          <div class="bg-purple-50 p-3 rounded-lg border border-purple-200">
+            <p class="text-sm text-purple-800">Terakhir Dikemaskini</p>
+            <p class="text-2xl font-bold text-purple-700">${formatDate(guru.lastUpdate)}</p>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <h4 class="font-semibold text-gray-700 mb-2">Aktiviti Mengikut Kategori</h4>
+            <div class="bg-white p-3 rounded-lg border border-gray-200">
+              ${Object.entries(categoryCount).map(([category, count]) => `
+                <div class="flex justify-between items-center py-1">
+                  <span>${category}</span>
+                  <span class="font-semibold">${count}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <div>
+            <h4 class="font-semibold text-gray-700 mb-2">Aktiviti Mengikut Peringkat</h4>
+            <div class="bg-white p-3 rounded-lg border border-gray-200">
+              ${Object.entries(levelCount).map(([level, count]) => `
+                <div class="flex justify-between items-center py-1">
+                  <span>${level}</span>
+                  <span class="font-semibold">${count}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+        
+        <h4 class="font-semibold text-gray-700 mb-2">Senarai Aktiviti</h4>
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+            <thead>
+              <tr class="bg-gray-50">
+                <th class="py-2 px-4 border-b text-left">Tarikh</th>
+                <th class="py-2 px-4 border-b text-left">Aktiviti</th>
+                <th class="py-2 px-4 border-b text-center">Kategori</th>
+                <th class="py-2 px-4 border-b text-center">Peringkat</th>
+                <th class="py-2 px-4 border-b text-center">Jumlah Murid</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${sortedActivities.length > 0 ? sortedActivities.map(item => `
+                <tr class="hover:bg-gray-50">
+                  <td class="py-2 px-4 border-b">${formatDate(item.date)}</td>
+                  <td class="py-2 px-4 border-b">${item.name}</td>
+                  <td class="py-2 px-4 border-b text-center">${item.category}</td>
+                  <td class="py-2 px-4 border-b text-center">${item.level}</td>
+                  <td class="py-2 px-4 border-b text-center">${item.studentCount}</td>
+                </tr>
+              `).join('') : `
+                <tr>
+                  <td colspan="5" class="py-4 text-center text-gray-500">Tiada rekod aktiviti</td>
+                </tr>
+              `}
+            </tbody>
+          </table>
+        </div>
+      `;
+      
+      guruModal.classList.remove('hidden');
+    }
+
+    // Render top participation
+    function renderTopParticipation(data, container) {
+      container.innerHTML = '';
+      
+      if (data.length === 0) {
+        container.innerHTML = '<div class="p-3 text-center text-gray-500">Tiada data penyertaan</div>';
+        return;
+      }
+      
+      data.forEach((student, index) => {
+        const item = document.createElement('div');
+        item.className = 'flex items-center justify-between bg-white p-2 rounded-md';
+        item.innerHTML = `
+          <div class="flex items-center">
+            <div class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2">${index + 1}</div>
+            <span>${student.name} <span class="text-gray-500 text-sm">(${student.class})</span></span>
+          </div>
+          <span class="font-semibold">${student.participationCount} penyertaan</span>
+        `;
+        
+        container.appendChild(item);
+      });
+    }
+
+    // Render top achievements
+    function renderTopAchievements(data, container) {
+      container.innerHTML = '';
+      
+      if (data.length === 0) {
+        container.innerHTML = '<div class="p-3 text-center text-gray-500">Tiada data pencapaian</div>';
+        return;
+      }
+      
+      data.forEach((student, index) => {
+        const item = document.createElement('div');
+        item.className = 'flex items-center justify-between bg-white p-2 rounded-md';
+        item.innerHTML = `
+          <div class="flex items-center">
+            <div class="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-2">${index + 1}</div>
+            <span>${student.name} <span class="text-gray-500 text-sm">(${student.class})</span></span>
+          </div>
+          <span class="font-semibold">${student.highestLevel} ${student.highestAchievement}</span>
+        `;
+        
+        container.appendChild(item);
+      });
+    }
+
+    // Render analysis table
+    function renderAnalysisTable(data, tableContainer) {
+      tableContainer.innerHTML = '';
+      
+      if (data.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td colspan="5" class="py-4 text-center text-gray-500">Tiada data analisis murid</td>`;
+        tableContainer.appendChild(row);
+        return;
+      }
+      
+      data.forEach(student => {
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-gray-50 cursor-pointer student-row';
+        row.dataset.id = student.id;
+        row.dataset.name = student.name;
+        row.dataset.class = student.class;
+        
+        row.innerHTML = `
+          <td class="py-2 px-4 border-b">${student.name}</td>
+          <td class="py-2 px-4 border-b">${student.class}</td>
+          <td class="py-2 px-4 border-b text-center">${student.participationCount}</td>
+          <td class="py-2 px-4 border-b text-center">${student.combinedParticipation === 'Tiada' ? '-' : student.combinedParticipation}</td>
+          <td class="py-2 px-4 border-b text-center">${student.combinedAchievement === 'Tiada' ? '-' : student.combinedAchievement}</td>
+        `;
+        
+        tableContainer.appendChild(row);
+        
+        // Add click event to show student details
+        row.addEventListener('click', () => {
+          showStudentDetails(student);
+        });
+      });
+    }
+
+    // Show student details
+    function showStudentDetails(student) {
+      // Get the student's participations
+      const participationHistory = student.participations;
+      
+      // Sort participations by date (newest first)
+      const sortedHistory = [...participationHistory].sort((a, b) => 
+        b.date - a.date
+      );
+      
+      // Get category distribution
+      const categoryLabels = Object.keys(student.categories);
+      const categoryValues = Object.values(student.categories);
+      
+      studentModalContent.innerHTML = `
+        <h3 class="text-xl font-bold mb-4">${student.name} <span class="text-gray-500 text-base">(${student.class})</span></h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="bg-blue-50 p-3 rounded-lg border border-blue-200">
+            <p class="text-sm text-blue-800">Jumlah Penyertaan</p>
+            <p class="text-2xl font-bold text-blue-700">${student.participationCount}</p>
+          </div>
+          <div class="bg-green-50 p-3 rounded-lg border border-green-200">
+            <p class="text-sm text-green-800">Pencapaian Tertinggi</p>
+            <p class="text-2xl font-bold text-green-700">${student.combinedAchievement === 'Tiada' ? '-' : student.combinedAchievement}</p>
+          </div>
+          <div class="bg-purple-50 p-3 rounded-lg border border-purple-200">
+            <p class="text-sm text-purple-800">Kategori Paling Aktif</p>
+            <p class="text-2xl font-bold text-purple-700">${student.mostActiveCategory}</p>
+          </div>
+        </div>
+        
+        <div class="mb-6">
+          <h4 class="font-semibold text-gray-700 mb-2">Kategori Penyertaan</h4>
+          <div class="flex flex-wrap gap-2">
+            ${Object.entries(student.categories).map(([category, count]) => `
+              <div class="bg-gray-100 px-3 py-1 rounded-full text-sm">
+                ${category} <span class="font-semibold">(${count})</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        
+        <h4 class="font-semibold text-gray-700 mb-2">Sejarah Penyertaan</h4>
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+            <thead>
+              <tr class="bg-gray-50">
+                <th class="py-2 px-4 border-b text-left">Tarikh</th>
+                <th class="py-2 px-4 border-b text-left">Aktiviti</th>
+                <th class="py-2 px-4 border-b text-center">Kategori</th>
+                <th class="py-2 px-4 border-b text-center">Peringkat</th>
+                <th class="py-2 px-4 border-b text-center">Pencapaian</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${sortedHistory.length > 0 ? sortedHistory.map(item => `
+                <tr class="hover:bg-gray-50">
+                  <td class="py-2 px-4 border-b">${formatDate(item.date)}</td>
+                  <td class="py-2 px-4 border-b">${item.activity}</td>
+                  <td class="py-2 px-4 border-b text-center">${item.category}</td>
+                  <td class="py-2 px-4 border-b text-center">${item.level}</td>
+                  <td class="py-2 px-4 border-b text-center">${item.achievement}</td>
+                </tr>
+              `).join('') : `
+                <tr>
+                  <td colspan="5" class="py-4 text-center text-gray-500">Tiada rekod penyertaan</td>
+                </tr>
+              `}
+            </tbody>
+          </table>
+        </div>
+      `;
+      
+      studentModal.classList.remove('hidden');
+    }
+
+    // Format date
+    function formatDate(date) {
+      if (!date) return '-';
+      return new Date(date).toLocaleDateString('ms-MY', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    }
+
+    // Modal close events
+    closeStudentModal.addEventListener('click', () => {
+      studentModal.classList.add('hidden');
+    });
+
+    closeStudentModalBtn.addEventListener('click', () => {
+      studentModal.classList.add('hidden');
+    });
+
+    closeGuruModal.addEventListener('click', () => {
+      guruModal.classList.add('hidden');
+    });
+
+    closeGuruModalBtn.addEventListener('click', () => {
+      guruModal.classList.add('hidden');
+    });
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'964320c324803c4d',t:'MTc1MzM1NzA3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
