@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem KoAktif! - SJKC Kg Baru Pajam</title>
+    <title>KoAktif! - SJKC Kg Baru Pajam</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tone.js CDN for Sound Effects -->
+    <!-- Tone.js CDN for subtle sound effects -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
     <style>
         /* Custom styles for messages/modals */
@@ -14,7 +14,7 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background-color: #4CAF50; /* Green */
+            background-color: #22c55e; /* Tailwind green-500 */
             color: white;
             padding: 15px;
             border-radius: 12px; /* More rounded */
@@ -148,7 +148,7 @@
         }
     </style>
 </head>
-<body class="font-sans bg-gradient-to-br from-slate-50 to-indigo-100 flex flex-col items-center justify-center min-h-screen p-4">
+<body class="font-sans bg-gradient-to-br from-indigo-50 to-purple-100 flex flex-col items-center justify-center min-h-screen p-4">
 
     <!-- Message Box -->
     <div id="message-box" class="message-box rounded-lg">
@@ -185,9 +185,25 @@
         </div>
     </div>
 
-    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-3xl border border-indigo-100">
-        <h1 class="text-4xl font-extrabold text-center text-indigo-800 mb-4 tracking-tight">Sistem KoAktif!</h1>
-        <p class="text-center text-gray-600 mb-8 text-lg">SJKC Kg Baru Pajam</p>
+    <!-- Custom Confirmation Modal -->
+    <div id="confirmation-modal" class="modal">
+        <div class="modal-content w-full max-w-sm text-center">
+            <h3 id="confirmation-message" class="text-xl font-semibold text-gray-800 mb-6"></h3>
+            <div class="flex justify-center space-x-4">
+                <button id="confirm-yes-button" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 shadow-md">
+                    Ya
+                </button>
+                <button id="confirm-no-button" class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 shadow-md">
+                    Tidak
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-3xl border border-indigo-100">
+        <h1 class="text-4xl font-extrabold text-center text-indigo-900 mb-2 tracking-tight">KoAktif!</h1>
+        <p class="text-center text-xl font-semibold text-gray-700 mb-1">SJKC Kg Baru Pajam</p>
+        <p class="text-center text-base text-gray-600 mb-8">71700 Mantin, Negeri Sembilan</p>
 
         <!-- Loading Indicator -->
         <div id="loading-indicator" class="text-center text-gray-500 mb-4 py-8">
@@ -226,9 +242,12 @@
         <!-- Main Application Section (after authentication) -->
         <div id="main-app-section" class="hidden">
             <div id="auth-status" class="bg-indigo-50 border-l-4 border-indigo-400 text-indigo-800 p-4 mb-6 rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center shadow-sm">
-                <div class="mb-2 sm:mb-0">
-                    <p class="text-sm">Log masuk sebagai: <span id="user-email" class="font-semibold text-indigo-900"></span></p>
-                    <p class="text-xl text-indigo-800 font-bold mt-1">Selamat datang, <span id="logged-in-guru-name"></span>!</p>
+                <div class="mb-2 sm:mb-0 flex items-center space-x-3">
+                    <img src="https://i.postimg.cc/D4W03LQC/logo-SJKC-KGB-PAJAM.png" alt="SJKC Kg Baru Pajam Logo" class="block w-10 h-10 object-contain rounded-full shadow-md">
+                    <div>
+                        <p class="text-sm">Log masuk sebagai: <span id="user-email" class="font-semibold text-indigo-900"></span></p>
+                        <p class="text-xl text-indigo-800 font-bold mt-1">Selamat datang, <span id="logged-in-guru-name"></span>!</p>
+                    </div>
                 </div>
                 <button id="logout-button" class="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 shadow-md transition duration-150 ease-in-out">
                     Log Keluar
@@ -265,7 +284,7 @@
                     <div>
                         <label for="record-nama-pertandingan" class="block text-gray-700 text-sm font-bold mb-2">Nama Pertandingan:</label>
                         <input type="text" id="record-nama-pertandingan" placeholder="Nama Pertandingan"
-                               class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-150 uppercase">
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-150 uppercase">
                     </div>
                     
                     <div class="mb-4">
@@ -323,10 +342,16 @@
                         </div>
                     </div>
                     
-                    <button id="add-record-button"
-                            class="w-full px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-lg hover:shadow-xl transition-all duration-150 ease-in-out transform hover:-translate-y-0.5">
-                        Tambah Rekod Penyertaan
-                    </button>
+                    <div id="add-update-buttons" class="space-y-3">
+                        <button id="add-record-button"
+                                class="w-full px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-lg hover:shadow-xl transition-all duration-150 ease-in-out transform hover:-translate-y-0.5">
+                            Tambah Rekod Penyertaan
+                        </button>
+                        <button id="cancel-edit-button"
+                                class="w-full px-6 py-3 bg-gray-500 text-white font-semibold rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 shadow-md transition-all duration-150 ease-in-out hidden">
+                            Batal Edit
+                        </button>
+                    </div>
                 </div>
 
                 <h3 class="text-xl font-semibold text-gray-800 mt-10 mb-5 border-b pb-3">Rekod Penyertaan Tersimpan</h3>
@@ -350,6 +375,24 @@
             <div id="content-student-dashboard" class="content-area hidden">
                 <h2 class="text-2xl font-semibold text-gray-800 mb-6 border-b pb-3">Papan Pemuka Murid</h2>
                 <div class="space-y-6">
+                    <!-- Top Students Section -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="p-5 bg-yellow-50 rounded-xl shadow-inner border border-yellow-200">
+                            <h3 class="text-lg font-semibold text-yellow-800 mb-3">TOP 5: Penyertaan Terbanyak</h3>
+                            <ul id="top-participating-students-list" class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                                <!-- Top students by participation will be populated here -->
+                            </ul>
+                            <p id="no-top-participating-students" class="text-gray-500 text-sm italic mt-2 hidden">Tiada data untuk TOP 5.</p>
+                        </div>
+                        <div class="p-5 bg-green-50 rounded-xl shadow-inner border border-green-200">
+                            <h3 class="text-lg font-semibold text-green-800 mb-3">TOP 5: Pencapaian Tertinggi</h3>
+                            <ul id="top-achieving-students-list" class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                                <!-- Top students by achievement will be populated here -->
+                            </ul>
+                            <p id="no-top-achieving-students" class="text-gray-500 text-sm italic mt-2 hidden">Tiada data untuk TOP 5.</p>
+                        </div>
+                    </div>
+
                     <!-- Filter Section -->
                     <div class="p-5 bg-indigo-50 rounded-xl shadow-inner">
                         <h3 class="text-lg font-semibold text-indigo-800 mb-3">Tapis Rekod Murid</h3>
@@ -466,7 +509,10 @@
             serverTimestamp,
             Timestamp,
             getDocs,
-            where
+            where,
+            doc, // Added for updateDoc and deleteDoc
+            updateDoc, // Added for editing
+            deleteDoc // Added for deleting
         } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         // Your Firebase configuration - replace YOUR_WEB_APP_ID_HERE with your actual App ID from Firebase Console
@@ -484,120 +530,14 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- Sound Effects Setup (Tone.js) ---
-        // Basic Synth for general clicks
-        const clickSynth = new Tone.PolySynth(Tone.Synth, {
-            oscillator: { type: "sine" },
-            envelope: { attack: 0.001, decay: 0.1, sustain: 0.1, release: 0.1 },
-            volume: -10
-        }).toDestination();
-
-        // Synth for success notifications
-        const successSynth = new Tone.PolySynth(Tone.Synth, {
-            oscillator: { type: "triangle" },
-            envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.2 },
-            volume: -8
-        }).toDestination();
-
-        // Synth for error notifications
-        const errorSynth = new Tone.PolySynth(Tone.Synth, {
-            oscillator: { type: "sawtooth" },
-            envelope: { attack: 0.01, decay: 0.3, sustain: 0.05, release: 0.3 },
-            volume: -7
-        }).toDestination();
-
-        async function playSound(type) {
-            // Ensure audio context is started on user interaction
-            await Tone.start(); 
-            if (type === 'click') {
-                clickSynth.triggerAttackRelease("C4", "8n");
-            } else if (type === 'success') {
-                successSynth.triggerAttackRelease(["C5", "E5", "G5"], "8n");
-            } else if (type === 'error') {
-                errorSynth.triggerAttackRelease(["C3", "F#3"], "8n");
-            }
-        }
-
-        // UI Elements (Existing)
-        const loadingIndicator = document.getElementById('loading-indicator');
-        const authSection = document.getElementById('auth-section');
-        const mainAppSection = document.getElementById('main-app-section');
-
-        const authEmailInput = document.getElementById('auth-email');
-        const authPasswordInput = document.getElementById('auth-password');
-        const loginButton = document.getElementById('login-button');
-        const signupButton = document.getElementById('signup-button');
-        const forgotPasswordButton = document.getElementById('forgot-password-button');
-
-        const userEmailSpan = document.getElementById('user-email');
-        const loggedInGuruNameSpan = document.getElementById('logged-in-guru-name');
-        const logoutButton = document.getElementById('logout-button');
-
-        const navDataEntry = document.getElementById('nav-data-entry');
-        const navStudentDashboard = document.getElementById('nav-student-dashboard');
-        const navTeacherDashboard = document.getElementById('nav-teacher-dashboard');
-
-        const contentDataEntry = document.getElementById('content-data-entry');
-        const contentStudentDashboard = document.getElementById('content-student-dashboard');
-        const contentTeacherDashboard = document.getElementById('content-teacher-dashboard');
-
-        const recordSesiInput = document.getElementById('record-sesi');
-        const recordNamaGuruInput = document.getElementById('record-nama-guru');
-        const recordNamaPertandinganInput = document.getElementById('record-nama-pertandingan');
-        
-        const kategoriSelect = document.getElementById('kategori-select');
-        const peringkatSelect = document.getElementById('peringkat-select');
-
-        const tempKelasMuridInput = document.getElementById('temp-kelas-murid');
-        const tempNamaMuridInput = document.getElementById('temp-nama-murid');
-        const tempPencapaianMuridInput = document.getElementById('temp-pencapaian-murid');
-        const addTempMuridButton = document.getElementById('add-temp-murid-button');
-        const addedMuridListDiv = document.getElementById('added-murid-list');
-        const noMuridAddedText = document.getElementById('no-murid-added-text');
-
-        const addRecordButton = document.getElementById('add-record-button');
-        
-        const currentRecordDisplay = document.getElementById('current-record-display');
-        const prevRecordButton = document.getElementById('prev-record-button');
-        const nextRecordButton = document.getElementById('next-record-button');
-        const recordCountDisplay = document.getElementById('record-count-display');
-
-        const messageBox = document.getElementById('message-box');
-        const messageText = document.getElementById('message-text');
-
-        // UI Elements (Dashboards)
-        const filterKelasSelect = document.getElementById('filter-kelas');
-        const filterKategoriSelect = document.getElementById('filter-kategori');
-        const filterStudentNameInput = document.getElementById('filter-student-name');
-        const applyFilterButton = document.getElementById('apply-filter-button');
-        const filteredStudentsTableBody = document.getElementById('filtered-students-table-body');
-        const noFilteredStudentsText = document.getElementById('no-filtered-students-text');
-
-        const studentDetailsModal = document.getElementById('student-details-modal');
-        const closeStudentDetailsModalButton = document.getElementById('close-student-details-modal');
-        const modalStudentNameSpan = document.getElementById('modal-student-name');
-        const modalTotalActivitiesSpan = document.getElementById('modal-total-activities');
-        const modalHighestLevelSpan = document.getElementById('modal-highest-level');
-        const modalBestAchievementSpan = document.getElementById('modal-best-achievement');
-        const modalStudentRecordsDiv = document.getElementById('modal-student-records');
-
-        const teacherRecordsModal = document.getElementById('teacher-records-modal'); // New modal for teacher records
-        const closeTeacherRecordsModalButton = document.getElementById('close-teacher-records-modal');
-        const modalTeacherNameSpan = document.getElementById('modal-teacher-name'); // For teacher modal title
-        const modalTeacherRecordsDiv = document.getElementById('modal-teacher-records'); // For teacher modal content
-
-        const filterSesiGuruSelect = document.getElementById('filter-sesi-guru'); // New filter for teacher dashboard
-        const filterTeacherNameInput = document.getElementById('filter-teacher-name');
-        const applyTeacherFilterButton = document.getElementById('apply-teacher-filter-button');
-        const teacherStatsTableBody = document.getElementById('teacher-stats-table-body'); // Changed to table body
-        const noFilteredTeachersText = document.getElementById('no-filtered-teachers-text'); // New for teacher dashboard
-
+        // --- Global Variables (must be declared outside DOMContentLoaded if used globally) ---
         let currentUser = null;
-        let currentStudentsForRecord = [];
         let allMuridData = []; // Cached murid data
         let allRecords = []; // All records fetched from Firestore for various displays
         let allGuruData = []; // Cached guru data
+        let currentStudentsForRecord = []; // List of students currently added to the form before saving
         let currentRecordIndex = 0; // Index for the current record displayed in carousel
+        let editingRecordId = null; // Stores the ID of the record being edited
 
         // Define achievement and level ranking for logic
         // Lower number for achievementRank means better achievement (e.g., 1st is best)
@@ -619,21 +559,85 @@
             "Antarabangsa": 5
         };
 
+        // --- UI Elements Global Declaration (initialized in DOMContentLoaded) ---
+        let messageBox, messageText;
+        let loadingIndicator, authSection, mainAppSection;
+        let authEmailInput, authPasswordInput, loginButton, signupButton, forgotPasswordButton;
+        let userEmailSpan, loggedInGuruNameSpan, logoutButton;
+        let navDataEntry, navStudentDashboard, navTeacherDashboard;
+        let recordSesiInput, recordNamaGuruInput, recordNamaPertandinganInput;
+        let kategoriSelect, peringkatSelect;
+        let tempKelasMuridInput, tempNamaMuridInput, tempPencapaianMuridInput, addTempMuridButton, addedMuridListDiv, noMuridAddedText;
+        let addRecordButton, cancelEditButton, addUpdateButtonsDiv; // Added cancelEditButton, addUpdateButtonsDiv
+        let currentRecordDisplay, prevRecordButton, nextRecordButton, recordCountDisplay;
+        let filterKelasSelect, filterKategoriSelect, filterStudentNameInput, applyFilterButton, filteredStudentsTableBody, noFilteredStudentsText;
+        let studentDetailsModal, closeStudentDetailsModalButton, modalStudentNameSpan, modalTotalActivitiesSpan, modalHighestLevelSpan, modalBestAchievementSpan, modalStudentRecordsDiv;
+        let teacherRecordsModal, closeTeacherRecordsModalButton, modalTeacherNameSpan, modalTeacherRecordsDiv;
+        let filterSesiGuruSelect, filterTeacherNameInput, applyTeacherFilterButton, teacherStatsTableBody, noFilteredTeachersText;
+        let topParticipatingStudentsList, topAchievingStudentsList, noTopParticipatingStudents, noTopAchievingStudents;
+        let confirmationModal, confirmationMessage, confirmYesButton, confirmNoButton; // New for custom confirmation
+
+
+        // --- Sound Effects Setup (using Tone.js) ---
+        const feedbackSynth = new Tone.PolySynth(Tone.Synth, {
+            oscillator: { type: "sine" },
+            envelope: { attack: 0.01, decay: 0.1, sustain: 0.0, release: 0.2 },
+            volume: -15 // Start with a low volume
+        }).toDestination();
+
+        // Function to play a simple sound
+        function playFeedbackSound(type = 'success') {
+            // Ensure audio context is started (requires user gesture)
+            if (Tone.context.state !== 'running') {
+                Tone.start();
+            }
+            if (type === 'success') {
+                feedbackSynth.triggerAttackRelease(["C5", "E5"], "8n"); // A pleasant chord
+            } else if (type === 'error') {
+                feedbackSynth.triggerAttackRelease(["C3", "F#2"], "8n"); // A dissonant chord for error
+            } else if (type === 'click') {
+                feedbackSynth.triggerAttackRelease("C4", "16n"); // Simple click sound
+            }
+        }
+
+
         // --- Message Box Function ---
         function showMessage(message, isError = false) {
             messageText.textContent = message;
             messageBox.classList.remove('error');
             if (isError) {
                 messageBox.classList.add('error');
-                playSound('error'); // Play error sound
-            } else {
-                playSound('success'); // Play success sound
             }
             messageBox.classList.add('show');
+            playFeedbackSound(isError ? 'error' : 'success'); // Play sound based on message type
 
             setTimeout(() => {
                 messageBox.classList.remove('show');
             }, 3000);
+        }
+
+        // --- Custom Confirmation Modal Function ---
+        function showConfirmationModal(message, onConfirmCallback) {
+            confirmationMessage.textContent = message;
+            confirmationModal.classList.add('show');
+
+            const handleYes = () => {
+                onConfirmCallback();
+                confirmationModal.classList.remove('show');
+                confirmYesButton.removeEventListener('click', handleYes);
+                confirmNoButton.removeEventListener('click', handleNo);
+            };
+
+            const handleNo = () => {
+                confirmationModal.classList.remove('show');
+                confirmYesButton.removeEventListener('click', handleYes);
+                confirmNoButton.removeEventListener('click', handleNo);
+                showMessage("Tindakan dibatalkan.");
+                playFeedbackSound('click');
+            };
+
+            confirmYesButton.addEventListener('click', handleYes);
+            confirmNoButton.addEventListener('click', handleNo);
         }
 
         // --- Navigation Logic ---
@@ -754,169 +758,33 @@
             }
         }
 
-        // --- Firebase Authentication Listeners ---
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
-                userEmailSpan.textContent = currentUser.email;
-                authSection.classList.add('hidden');
-                mainAppSection.classList.remove('hidden');
-                loadingIndicator.classList.add('hidden');
-                showMessage(`Berjaya log masuk sebagai ${currentUser.email}.`);
+        // --- Firestore Listener for rekodPenyertaan (main data source) ---
+        function setupFirestoreListener() {
+            const q = query(collection(db, "rekodPenyertaan"), orderBy("timestamp", "desc"));
 
-                recordSesiInput.value = new Date().getFullYear().toString(); // Default current year
-                await fetchAndSetGuruName(currentUser.email);
-                await fetchAllMuridData(); // Load all murid data once
-                await fetchAllGuruData(); // Load all guru data once
-
-                showPage('content-data-entry');
-                setupFirestoreListener(); // Start listening for records
-            } else {
-                currentUser = null;
-                authSection.classList.remove('hidden');
-                mainAppSection.classList.add('hidden');
-                loadingIndicator.classList.add('hidden');
-                showMessage("Sila log masuk untuk meneruskan.");
-            }
-        });
-
-        // --- Authentication Event Listeners ---
-        loginButton.addEventListener('click', async () => {
-            playSound('click'); // Play click sound
-            const email = authEmailInput.value.trim();
-            const password = authPasswordInput.value.trim();
-            if (!email || !password) {
-                showMessage("Sila masukkan emel dan kata laluan.", true);
-                return;
-            }
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-            } catch (error) {
-                console.error("Login failed:", error);
-                showMessage(`Log masuk gagal: ${error.message}`, true);
-            }
-        });
-
-        signupButton.addEventListener('click', async () => {
-            playSound('click'); // Play click sound
-            const email = authEmailInput.value.trim();
-            const password = authPasswordInput.value.trim();
-            if (!email || !password) {
-                showMessage("Sila masukkan emel dan kata laluan.", true);
-                return;
-            }
-            if (password.length < 6) {
-                showMessage("Kata laluan mesti sekurang-kurangnya 6 aksara.", true);
-                return;
-            }
-            try {
-                await createUserWithEmailAndPassword(auth, email, password);
-                showMessage("Pendaftaran berjaya! Anda kini log masuk.", false);
-            } catch (error) {
-                console.error("Sign up failed:", error);
-                showMessage(`Pendaftaran gagal: ${error.message}`, true);
-            }
-        });
-
-        forgotPasswordButton.addEventListener('click', async () => {
-            playSound('click'); // Play click sound
-            const email = authEmailInput.value.trim();
-            if (!email) {
-                showMessage("Sila masukkan emel anda untuk menetapkan semula kata laluan.", true);
-                return;
-            }
-            try {
-                await sendPasswordResetEmail(auth, email);
-                showMessage(`Pautan tetapan semula kata laluan telah dihantar ke ${email}. Sila semak emel anda.`, false);
-            } catch (error) {
-                console.error("Password reset failed:", error);
-                showMessage(`Gagal menghantar pautan tetapan semula: ${error.message}`, true);
-            }
-        });
-
-        logoutButton.addEventListener('click', async () => {
-            playSound('click'); // Play click sound
-            try {
-                await signOut(auth);
-                showMessage("Anda telah log keluar.");
-            } catch (error) {
-                console.error("Logout failed:", error);
-                showMessage(`Gagal log keluar: ${error.message}`, true);
-            }
-        });
-
-        // --- Navigation Button Listeners ---
-        navDataEntry.addEventListener('click', () => { playSound('click'); showPage('content-data-entry'); });
-        navStudentDashboard.addEventListener('click', () => { playSound('click'); showPage('content-student-dashboard'); });
-        navTeacherDashboard.addEventListener('click', () => { playSound('click'); showPage('content-teacher-dashboard'); });
-
-        // --- Nama Pertandingan/Aktiviti Auto-capitalize ---
-        recordNamaPertandinganInput.addEventListener('input', (event) => {
-            event.target.value = event.target.value.toUpperCase();
-        });
-
-        // --- Temp Murid Select Handlers ---
-        tempKelasMuridInput.addEventListener('change', () => {
-            playSound('click'); // Play click sound
-            const selectedKelas = tempKelasMuridInput.value;
-            populateMuridDropdown(selectedKelas);
-        });
-
-        // --- Student List Management for Data Entry Form ---
-        function updateAddedMuridList() {
-            addedMuridListDiv.innerHTML = '';
-            if (currentStudentsForRecord.length === 0) {
-                noMuridAddedText.classList.remove('hidden');
-            } else {
-                noMuridAddedText.classList.add('hidden');
-                currentStudentsForRecord.forEach((murid, index) => {
-                    const muridItem = document.createElement('div');
-                    muridItem.className = 'murid-item';
-                    muridItem.innerHTML = `
-                        <span>${murid.nama} (${murid.kelas}) - ${murid.pencapaian}</span>
-                        <button class="remove-murid-button" data-index="${index}">&#x2715;</button>
-                    `;
-                    addedMuridListDiv.appendChild(muridItem);
-                });
-
-                document.querySelectorAll('.remove-murid-button').forEach(button => {
-                    button.addEventListener('click', (event) => {
-                        playSound('click'); // Play click sound for remove
-                        const indexToRemove = parseInt(event.target.dataset.index);
-                        currentStudentsForRecord.splice(indexToRemove, 1);
-                        updateAddedMuridList();
+            onSnapshot(q, (snapshot) => {
+                allRecords = [];
+                if (!snapshot.empty) {
+                    snapshot.forEach((doc) => {
+                        const recordData = doc.data();
+                        recordData.id = doc.id; // Store the document ID with the record data
+                        allRecords.push(recordData);
                     });
-                });
-            }
+                }
+                currentRecordIndex = 0;
+                displayCurrentRecord(); // Update data entry carousel
+
+                // Also re-render dashboards with updated data
+                renderStudentDashboard();
+                renderTeacherDashboard(); // Re-render teacher dashboard when records change
+                populateTeacherSesiFilter(); // Update sesi filter when records change
+            }, (error) => {
+                console.error("Error fetching PAJSK records: ", error);
+                showMessage(`Ralat memuatkan data PAJSK: ${error.message}`, true);
+                currentRecordDisplay.innerHTML = '<p class="text-red-500 text-center">Ralat memuatkan data PAJSK.</p>';
+            });
         }
-
-        addTempMuridButton.addEventListener('click', () => {
-            playSound('click'); // Play click sound
-            const nama = tempNamaMuridInput.value;
-            const kelas = tempKelasMuridInput.value;
-            const pencapaian = tempPencapaianMuridInput.value;
-
-            if (!nama || !kelas || !pencapaian) {
-                showMessage("Sila pilih Nama Murid, Kelas, dan Pencapaian.", true);
-                return;
-            }
-
-            const isDuplicate = currentStudentsForRecord.some(student => student.nama === nama);
-            if (isDuplicate) {
-                showMessage(`Murid '${nama}' telah ditambah untuk rekod ini.`, true);
-                return;
-            }
-
-            currentStudentsForRecord.push({ id: nama, nama, kelas, pencapaian });
-            updateAddedMuridList();
-
-            // Reset dropdowns after adding
-            tempKelasMuridInput.value = '';
-            tempNamaMuridInput.innerHTML = '<option value="">Pilih Murid</option>'; // Clear murid dropdown
-            tempPencapaianMuridInput.value = '';
-        });
-
-
+        
         // --- Carousel Display Logic ---
         function displayCurrentRecord() {
             currentRecordDisplay.innerHTML = '';
@@ -965,97 +833,6 @@
             nextRecordButton.disabled = currentRecordIndex === allRecords.length - 1;
             recordCountDisplay.textContent = `${currentRecordIndex + 1} dari ${allRecords.length} rekod`;
         }
-
-        // --- Carousel Navigation Event Listeners ---
-        prevRecordButton.addEventListener('click', () => {
-            playSound('click'); // Play click sound
-            if (currentRecordIndex > 0) {
-                currentRecordIndex--;
-                displayCurrentRecord();
-            }
-        });
-
-        nextRecordButton.addEventListener('click', () => {
-            playSound('click'); // Play click sound
-            if (currentRecordIndex < allRecords.length - 1) {
-                currentRecordIndex++;
-                displayCurrentRecord();
-            }
-        });
-
-        // --- Firestore Listener for rekodPenyertaan (main data source) ---
-        function setupFirestoreListener() {
-            const q = query(collection(db, "rekodPenyertaan"), orderBy("timestamp", "desc"));
-
-            onSnapshot(q, (snapshot) => {
-                allRecords = [];
-                if (!snapshot.empty) {
-                    snapshot.forEach((doc) => {
-                        allRecords.push(doc.data());
-                    });
-                }
-                currentRecordIndex = 0;
-                displayCurrentRecord(); // Update data entry carousel
-
-                // Also re-render dashboards with updated data
-                renderStudentDashboard();
-                renderTeacherDashboard(); // Re-render teacher dashboard when records change
-                populateTeacherSesiFilter(); // Update sesi filter when records change
-            }, (error) => {
-                console.error("Error fetching PAJSK records: ", error);
-                showMessage(`Ralat memuatkan data PAJSK: ${error.message}`, true);
-                currentRecordDisplay.innerHTML = '<p class="text-red-500 text-center">Ralat memuatkan data PAJSK.</p>';
-            });
-        }
-
-        // --- Add New Record Functionality ---
-        addRecordButton.addEventListener('click', async () => {
-            playSound('click'); // Play click sound
-            const sesi = recordSesiInput.value.trim();
-            const namaGuru = recordNamaGuruInput.value.trim();
-            const namaPertandingan = recordNamaPertandinganInput.value.trim();
-            const kategori = kategoriSelect.value;
-            const peringkat = peringkatSelect.value;
-
-            if (!currentUser) {
-                showMessage("Sila log masuk untuk menambah rekod.", true);
-                return;
-            }
-
-            if (!sesi || !namaGuru || !namaPertandingan || !kategori || !peringkat || currentStudentsForRecord.length === 0) {
-                showMessage("Sila lengkapkan semua medan wajib (termasuk Kategori & Peringkat) dan tambah sekurang-kurangnya seorang murid.", true);
-                return;
-            }
-
-            try {
-                await addDoc(collection(db, "rekodPenyertaan"), {
-                    sesi: sesi,
-                    namaGuru: namaGuru,
-                    namaPertandingan: namaPertandingan,
-                    kategori: kategori,
-                    peringkat: peringkat,
-                    murid: currentStudentsForRecord,
-                    userId: currentUser.uid,
-                    createdBy: currentUser.email,
-                    timestamp: serverTimestamp()
-                });
-                showMessage("Rekod penyertaan berjaya ditambah!");
-                // Clear form fields
-                recordSesiInput.value = new Date().getFullYear().toString();
-                recordNamaPertandinganInput.value = '';
-                kategoriSelect.value = '';
-                peringkatSelect.value = '';
-
-                currentStudentsForRecord = [];
-                updateAddedMuridList();
-                tempKelasMuridInput.value = '';
-                tempNamaMuridInput.innerHTML = '<option value="">Pilih Murid</option>';
-                tempPencapaianMuridInput.value = '';
-            } catch (error) {
-                console.error("Error adding PAJSK record: ", error);
-                showMessage(`Gagal menambah rekod: ${error.message}. Sila semak konsol untuk butiran.`, true);
-            }
-        });
 
         // --- Student Dashboard Logic ---
         function renderStudentDashboard() {
@@ -1114,10 +891,11 @@
 
                     // Store all records for modal
                     studentSummary[studentKey].allRecords.push({
+                        id: record.id, // Store record ID for potential future use
                         namaPertandingan: record.namaPertandingan,
                         kategori: record.kategori,
                         peringkat: record.peringkat,
-                        pencapaian: murid.pencapaian,
+                        pencapaian: murid.pencapaian, // The achievement of THIS specific murid in THIS record
                         sesi: record.sesi,
                         namaGuru: record.namaGuru,
                         timestamp: record.timestamp ? record.timestamp.toDate() : null // Include timestamp for sorting
@@ -1147,6 +925,9 @@
                     filteredStudentsTableBody.appendChild(tableRow);
                 });
             }
+
+            // Render TOP 5 lists
+            renderTopStudents(studentsArray);
         }
 
         function applyStudentFilters() {
@@ -1172,7 +953,49 @@
             return filtered;
         }
 
-        applyFilterButton.addEventListener('click', () => { playSound('click'); renderStudentDashboard(); }); // Re-render on filter click
+        function renderTopStudents(studentsArray) {
+            // Sort by Total Participations (descending)
+            const topParticipating = [...studentsArray].sort((a, b) => b.totalParticipations - a.totalParticipations).slice(0, 5);
+            topParticipatingStudentsList.innerHTML = '';
+            if (topParticipating.length > 0) {
+                noTopParticipatingStudents.classList.add('hidden');
+                topParticipating.forEach(student => {
+                    const li = document.createElement('li');
+                    li.textContent = `${student.nama} (${student.kelas}) - ${student.totalParticipations} Penyertaan`;
+                    topParticipatingStudentsList.appendChild(li);
+                });
+            } else {
+                noTopParticipatingStudents.classList.remove('hidden');
+            }
+
+            // Sort by Best Achievement: Prioritize Level then Achievement
+            const topAchieving = [...studentsArray].sort((a, b) => {
+                // If one has no achievement, it's worse (represented by Infinity rank)
+                if (a.bestAchievementRank === Infinity && b.bestAchievementRank !== Infinity) return 1;
+                if (a.bestAchievementRank !== Infinity && b.bestAchievementRank === Infinity) return -1;
+                if (a.bestAchievementRank === Infinity && b.bestAchievementRank === Infinity) return 0;
+
+                // 1. Compare by Achievement Level Rank (descending: higher level is better)
+                if (b.bestAchievementLevelRank !== a.bestAchievementLevelRank) {
+                    return b.bestAchievementLevelRank - a.bestAchievementLevelRank;
+                }
+
+                // 2. If Level Ranks are tied, compare by Achievement Rank (ascending: lower rank (1st, 2nd, etc.) is better)
+                return a.bestAchievementRank - b.bestAchievementRank;
+            }).slice(0, 5);
+
+            topAchievingStudentsList.innerHTML = '';
+            if (topAchieving.length > 0) {
+                noTopAchievingStudents.classList.add('hidden');
+                topAchieving.forEach(student => {
+                    const li = document.createElement('li');
+                    li.textContent = `${student.nama} (${student.kelas}) - ${student.bestAchievementWithLevel}`;
+                    topAchievingStudentsList.appendChild(li);
+                });
+            } else {
+                noTopAchievingStudents.classList.remove('hidden');
+            }
+        }
 
         function showStudentDetailsModal(studentData) {
             modalStudentNameSpan.textContent = studentData.nama;
@@ -1191,12 +1014,12 @@
 
                 studentData.allRecords.forEach(record => {
                     const recordItem = document.createElement('div');
-                    recordItem.className = 'bg-blue-50 p-3 rounded-md border border-blue-100';
+                    recordItem.className = 'bg-blue-50 p-3 rounded-md border border-blue-100 mb-3';
                     const timestampStr = record.timestamp ? record.timestamp.toLocaleString() : 'N/A';
+                    
                     recordItem.innerHTML = `
                         <p class="font-medium">${record.namaPertandingan}</p>
                         <p class="text-xs text-gray-700">Sesi: ${record.sesi} | Kategori: ${record.kategori} | Peringkat: ${record.peringkat}</p>
-                        <p class="text-sm text-indigo-700 font-semibold">Pencapaian: ${record.pencapaian}</p>
                         <p class="text-xs text-gray-500">Guru: ${record.namaGuru}</p>
                         <p class="text-xs text-gray-500">Tarikh Rekod: ${timestampStr}</p>
                     `;
@@ -1209,11 +1032,6 @@
             studentDetailsModal.classList.add('show');
         }
 
-        closeStudentDetailsModalButton.addEventListener('click', () => {
-            playSound('click'); // Play click sound
-            studentDetailsModal.classList.remove('show');
-        });
-
         // --- Teacher Dashboard Logic ---
         function renderTeacherDashboard() {
             teacherStatsTableBody.innerHTML = ''; // Clear table
@@ -1224,7 +1042,6 @@
 
             const teacherStats = {};
 
-            // Start with all guru data
             // Use a Set to track processed emails to avoid duplicates
             const processedEmails = new Set(); 
 
@@ -1289,7 +1106,26 @@
             } else {
                 finalTeachers.forEach(teacher => {
                     const tableRow = document.createElement('tr');
-                    tableRow.className = 'hover:bg-gray-100';
+                    
+                    // Determine background color based on last record date
+                    const now = new Date();
+                    let bgColorClass = 'bg-white'; // Default
+
+                    if (teacher.lastRecordDate) {
+                        const daysDiff = (now.getTime() - teacher.lastRecordDate.getTime()) / (1000 * 60 * 60 * 24);
+                        if (daysDiff <= 7) {
+                            bgColorClass = 'bg-green-50'; // Very recent
+                        } else if (daysDiff <= 30) {
+                            bgColorClass = 'bg-yellow-50'; // Recent
+                        } else {
+                            bgColorClass = 'bg-red-50'; // Older
+                        }
+                    } else {
+                        bgColorClass = 'bg-gray-50'; // No records
+                    }
+                    tableRow.className = `hover:bg-gray-100 ${bgColorClass}`;
+
+
                     tableRow.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${teacher.name}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${teacher.email}</td>
@@ -1309,7 +1145,6 @@
                 // Attach event listeners for 'Semak Data' buttons
                 document.querySelectorAll('.view-teacher-data').forEach(button => {
                     button.addEventListener('click', (event) => {
-                        playSound('click'); // Play click sound
                         const email = event.target.dataset.teacherEmail;
                         const name = event.target.dataset.teacherName;
                         showTeacherRecordsModal(email, name);
@@ -1318,10 +1153,7 @@
             }
         }
 
-        filterSesiGuruSelect.addEventListener('change', () => { playSound('click'); renderTeacherDashboard(); });
-        applyTeacherFilterButton.addEventListener('click', () => { playSound('click'); renderTeacherDashboard(); });
-
-        function showTeacherRecordsModal(teacherEmail, teacherName) {
+        async function showTeacherRecordsModal(teacherEmail, teacherName) {
             modalTeacherNameSpan.textContent = teacherName;
             modalTeacherRecordsDiv.innerHTML = '<p class="text-gray-500">Memuatkan rekod...</p>';
 
@@ -1340,12 +1172,12 @@
                 recordsForTeacher.forEach(record => {
                     const recordItem = document.createElement('div');
                     recordItem.className = 'bg-blue-50 p-3 rounded-md border border-blue-100 mb-3';
-                    const timestampStr = record.timestamp ? new Date(record.timestamp.toDate()).toLocaleString() : 'N/A';
+                    const timestampStr = record.timestamp ? record.timestamp.toLocaleString() : 'N/A';
                     
                     let studentsListHtml = '<ul class="list-disc list-inside mt-2 text-gray-700 space-y-1">';
                     if (record.murid && Array.isArray(record.murid) && record.murid.length > 0) {
-                        record.murid.forEach(murid => {
-                            studentsListHtml += `<li class="text-gray-800"><span class="font-medium">${murid.nama}</span> (${murid.kelas}) - Pencapaian: <span class="text-indigo-600 font-semibold">${murid.pencapaian}</span></li>`;
+                        record.murid.forEach(muridEntry => { // Renamed to muridEntry to avoid scope conflict
+                            studentsListHtml += `<li class="text-gray-800"><span class="font-medium">${muridEntry.nama}</span> (${muridEntry.kelas}) - Pencapaian: <span class="text-indigo-600 font-semibold">${muridEntry.pencapaian}</span></li>`;
                         });
                     } else {
                         studentsListHtml += '<li class="text-gray-500 italic">Tiada murid direkodkan.</li>';
@@ -1362,9 +1194,35 @@
                         </div>
                         <p class="font-semibold text-gray-800 mt-3 mb-1">Murid yang Terlibat:</p>
                         ${studentsListHtml}
+                        <div class="flex justify-end space-x-2 mt-4">
+                            <button class="px-3 py-1 bg-green-500 text-white text-xs font-semibold rounded-md hover:bg-green-600 transition-colors duration-150 edit-record-button" data-record-id="${record.id}">
+                                Edit
+                            </button>
+                            <button class="px-3 py-1 bg-red-500 text-white text-xs font-semibold rounded-md hover:bg-red-600 transition-colors duration-150 delete-record-button" data-record-id="${record.id}">
+                                Padam
+                            </button>
+                        </div>
                     `;
                     modalTeacherRecordsDiv.appendChild(recordItem);
                 });
+
+                // Attach event listeners for Edit/Delete buttons
+                document.querySelectorAll('.edit-record-button').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        playFeedbackSound('click');
+                        const recordId = event.target.dataset.recordId;
+                        editRecord(recordId);
+                    });
+                });
+                document.querySelectorAll('.delete-record-button').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        playFeedbackSound('click');
+                        const recordId = event.target.dataset.recordId;
+                        // Use custom confirmation modal
+                        showConfirmationModal("Adakah anda pasti ingin memadam rekod ini?", () => deleteRecordConfirmed(recordId));
+                    });
+                });
+
             } else {
                 modalTeacherRecordsDiv.innerHTML = '<p class="text-gray-500">Tiada rekod pengisian ditemui untuk guru ini.</p>';
             }
@@ -1372,11 +1230,511 @@
             teacherRecordsModal.classList.add('show');
         }
 
-        closeTeacherRecordsModalButton.addEventListener('click', () => {
-            playSound('click'); // Play click sound
-            teacherRecordsModal.classList.remove('show');
-        });
+        // --- Edit Record Function ---
+        function editRecord(recordId) {
+            const recordToEdit = allRecords.find(record => record.id === recordId);
+            if (!recordToEdit) {
+                showMessage("Rekod tidak ditemui untuk diedit.", true);
+                return;
+            }
 
+            // Set global editing ID
+            editingRecordId = recordId;
+
+            // Populate form fields
+            recordSesiInput.value = recordToEdit.sesi || '';
+            recordNamaPertandinganInput.value = recordToEdit.namaPertandingan || '';
+            kategoriSelect.value = recordToEdit.kategori || '';
+            peringkatSelect.value = recordToEdit.peringkat || '';
+            
+            // Populate students
+            currentStudentsForRecord = JSON.parse(JSON.stringify(recordToEdit.murid || [])); // Deep copy to avoid modifying original
+            updateAddedMuridList(); // Call the global function
+
+            // Change button text and show cancel button
+            addRecordButton.textContent = 'Kemaskini Rekod';
+            addRecordButton.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+            addRecordButton.classList.add('bg-green-600', 'hover:bg-green-700');
+            cancelEditButton.classList.remove('hidden');
+
+            // Switch to Data Entry tab
+            showPage('content-data-entry');
+            teacherRecordsModal.classList.remove('show'); // Close teacher modal
+            showMessage("Rekod sedia untuk dikemaskini. Sila ubah maklumat dan tekan 'Kemaskini Rekod'.");
+        }
+
+        // --- Delete Record Function (triggered by confirmation modal) ---
+        async function deleteRecordConfirmed(recordId) {
+            try {
+                await deleteDoc(doc(db, "rekodPenyertaan", recordId));
+                showMessage("Rekod berjaya dipadam!");
+                playFeedbackSound('success');
+                teacherRecordsModal.classList.remove('show'); // Close modal after delete
+            } catch (error) {
+                console.error("Error deleting record:", error);
+                showMessage(`Gagal memadam rekod: ${error.message}`, true);
+                playFeedbackSound('error');
+            }
+        }
+
+
+        // --- LLM (Gemini API) Integration Functions ---
+        async function callGeminiAPI(prompt) {
+            const apiKey = ""; // Canvas will automatically provide the API key
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+
+            let response;
+            try {
+                // Implement exponential backoff for API calls
+                const MAX_RETRIES = 3;
+                let retryCount = 0;
+                while (retryCount < MAX_RETRIES) {
+                    try {
+                        response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        if (response.ok) {
+                            break; // Success, exit retry loop
+                        } else {
+                            console.warn(`API call failed with status ${response.status}. Retrying...`);
+                            retryCount++;
+                            await new Promise(res => setTimeout(res, Math.pow(2, retryCount) * 1000)); // Exponential backoff
+                        }
+                    } catch (error) {
+                        console.warn(`API call failed: ${error.message}. Retrying...`);
+                        retryCount++;
+                        await new Promise(res => setTimeout(res, Math.pow(2, retryCount) * 1000)); // Exponential backoff
+                    }
+                }
+                if (!response || !response.ok) {
+                    throw new Error(`Failed to fetch from Gemini API after ${MAX_RETRIES} retries.`);
+                }
+                
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    return result.candidates[0].content.parts[0].text;
+                } else {
+                    throw new Error("No content found in Gemini API response.");
+                }
+            } catch (error) {
+                console.error("Gemini API call failed:", error);
+                showMessage(`Error calling AI: ${error.message}`, true);
+                return null;
+            }
+        }
+        
+        // --- Student List Management for Data Entry Form ---
+        // Moved to global scope to be accessible by editRecord and cancelEdit
+        function updateAddedMuridList() {
+            addedMuridListDiv.innerHTML = '';
+            if (currentStudentsForRecord.length === 0) {
+                noMuridAddedText.classList.remove('hidden');
+            } else {
+                noMuridAddedText.classList.add('hidden');
+                currentStudentsForRecord.forEach((murid, index) => {
+                    const muridItem = document.createElement('div');
+                    muridItem.className = 'murid-item';
+                    muridItem.innerHTML = `
+                        <span>${murid.nama} (${murid.kelas}) - ${murid.pencapaian}</span>
+                        <button class="remove-murid-button" data-index="${index}">&#x2715;</button>
+                    `;
+                    addedMuridListDiv.appendChild(muridItem);
+                });
+
+                document.querySelectorAll('.remove-murid-button').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        playFeedbackSound('click');
+                        const indexToRemove = parseInt(event.target.dataset.index);
+                        currentStudentsForRecord.splice(indexToRemove, 1);
+                        updateAddedMuridList();
+                    });
+                });
+            }
+        }
+
+
+        // --- All DOM-dependent code should be inside DOMContentLoaded ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Assign UI Elements
+            messageBox = document.getElementById('message-box');
+            messageText = document.getElementById('message-text');
+            loadingIndicator = document.getElementById('loading-indicator');
+            authSection = document.getElementById('auth-section');
+            mainAppSection = document.getElementById('main-app-section');
+
+            authEmailInput = document.getElementById('auth-email');
+            authPasswordInput = document.getElementById('auth-password');
+            loginButton = document.getElementById('login-button');
+            signupButton = document.getElementById('signup-button');
+            forgotPasswordButton = document.getElementById('forgot-password-button');
+
+            userEmailSpan = document.getElementById('user-email');
+            loggedInGuruNameSpan = document.getElementById('logged-in-guru-name');
+            logoutButton = document.getElementById('logout-button');
+
+            navDataEntry = document.getElementById('nav-data-entry');
+            navStudentDashboard = document.getElementById('nav-student-dashboard');
+            navTeacherDashboard = document.getElementById('nav-teacher-dashboard');
+
+            recordSesiInput = document.getElementById('record-sesi');
+            recordNamaGuruInput = document.getElementById('record-nama-guru');
+            recordNamaPertandinganInput = document.getElementById('record-nama-pertandingan');
+            
+            kategoriSelect = document.getElementById('kategori-select');
+            peringkatSelect = document.getElementById('peringkat-select');
+
+            tempKelasMuridInput = document.getElementById('temp-kelas-murid');
+            tempNamaMuridInput = document.getElementById('temp-nama-murid');
+            tempPencapaianMuridInput = document.getElementById('temp-pencapaian-murid');
+            addTempMuridButton = document.getElementById('add-temp-murid-button');
+            addedMuridListDiv = document.getElementById('added-murid-list');
+            noMuridAddedText = document.getElementById('no-murid-added-text');
+
+            addRecordButton = document.getElementById('add-record-button');
+            cancelEditButton = document.getElementById('cancel-edit-button'); // Get new button
+            addUpdateButtonsDiv = document.getElementById('add-update-buttons'); // Get container div
+            
+            currentRecordDisplay = document.getElementById('current-record-display');
+            prevRecordButton = document.getElementById('prev-record-button');
+            nextRecordButton = document.getElementById('next-record-button');
+            recordCountDisplay = document.getElementById('record-count-display');
+
+            // UI Elements (Dashboards)
+            filterKelasSelect = document.getElementById('filter-kelas');
+            filterKategoriSelect = document.getElementById('filter-kategori');
+            filterStudentNameInput = document.getElementById('filter-student-name');
+            applyFilterButton = document.getElementById('apply-filter-button');
+            filteredStudentsTableBody = document.getElementById('filtered-students-table-body');
+            noFilteredStudentsText = document.getElementById('no-filtered-students-text');
+
+            studentDetailsModal = document.getElementById('student-details-modal');
+            closeStudentDetailsModalButton = document.getElementById('close-student-details-modal');
+            modalStudentNameSpan = document.getElementById('modal-student-name');
+            modalTotalActivitiesSpan = document.getElementById('modal-total-activities');
+            modalHighestLevelSpan = document.getElementById('modal-highest-level');
+            modalBestAchievementSpan = document.getElementById('modal-best-achievement');
+            modalStudentRecordsDiv = document.getElementById('modal-student-records');
+
+            teacherRecordsModal = document.getElementById('teacher-records-modal'); // New modal for teacher records
+            closeTeacherRecordsModalButton = document.getElementById('close-teacher-records-modal');
+            modalTeacherNameSpan = document.getElementById('modal-teacher-name'); // For teacher modal title
+            modalTeacherRecordsDiv = document.getElementById('modal-teacher-records'); // For teacher modal content
+
+            filterSesiGuruSelect = document.getElementById('filter-sesi-guru'); // New filter for teacher dashboard
+            filterTeacherNameInput = document.getElementById('filter-teacher-name');
+            applyTeacherFilterButton = document.getElementById('apply-teacher-filter-button');
+            teacherStatsTableBody = document.getElementById('teacher-stats-table-body'); // Changed to table body
+            noFilteredTeachersText = document.getElementById('no-filtered-teachers-text'); // New for teacher dashboard
+            
+            // New UI Elements for TOP 5 lists
+            topParticipatingStudentsList = document.getElementById('top-participating-students-list');
+            topAchievingStudentsList = document.getElementById('top-achieving-students-list');
+            noTopParticipatingStudents = document.getElementById('no-top-participating-students');
+            noTopAchievingStudents = document.getElementById('no-top-achieving-students');
+
+            // Custom Confirmation Modal elements
+            confirmationModal = document.getElementById('confirmation-modal');
+            confirmationMessage = document.getElementById('confirmation-message');
+            confirmYesButton = document.getElementById('confirm-yes-button');
+            confirmNoButton = document.getElementById('confirm-no-button');
+
+
+            // --- Authentication Event Listeners ---
+            loginButton.addEventListener('click', async () => {
+                const email = authEmailInput.value.trim();
+                const password = authPasswordInput.value.trim();
+                if (!email || !password) {
+                    showMessage("Sila masukkan emel dan kata laluan.", true);
+                    return;
+                }
+                try {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    playFeedbackSound('success');
+                }
+                catch (error) {
+                    console.error("Login failed:", error);
+                    showMessage(`Log masuk gagal: ${error.message}`, true);
+                    playFeedbackSound('error');
+                }
+            });
+
+            signupButton.addEventListener('click', async () => {
+                const email = authEmailInput.value.trim();
+                const password = authPasswordInput.value.trim();
+                if (!email || !password) {
+                    showMessage("Sila masukkan emel dan kata laluan.", true);
+                    return;
+                }
+                if (password.length < 6) {
+                    showMessage("Kata laluan mesti sekurang-kurangnya 6 aksara.", true);
+                    return;
+                }
+                try {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    showMessage("Pendaftaran berjaya! Anda kini log masuk.", false);
+                    playFeedbackSound('success');
+                } catch (error) {
+                    console.error("Sign up failed:", error);
+                    showMessage(`Pendaftaran gagal: ${error.message}`, true);
+                    playFeedbackSound('error');
+                }
+            });
+
+            forgotPasswordButton.addEventListener('click', async () => {
+                const email = authEmailInput.value.trim();
+                if (!email) {
+                    showMessage("Sila masukkan emel anda untuk menetapkan semula kata laluan.", true);
+                    return;
+                }
+                try {
+                    await sendPasswordResetEmail(auth, email);
+                    showMessage(`Pautan tetapan semula kata laluan telah dihantar ke ${email}. Sila semak emel anda.`, false);
+                    playFeedbackSound('success');
+                }
+                catch (error) {
+                    console.error("Password reset failed:", error);
+                    showMessage(`Gagal menghantar pautan tetapan semula: ${error.message}`, true);
+                    playFeedbackSound('error');
+                }
+            });
+
+            logoutButton.addEventListener('click', async () => {
+                try {
+                    await signOut(auth);
+                    showMessage("Anda telah log keluar.");
+                    playFeedbackSound('click'); // Play click for logout
+                } catch (error) {
+                    console.error("Logout failed:", error);
+                    showMessage(`Gagal log keluar: ${error.message}`, true);
+                    playFeedbackSound('error');
+                }
+            });
+
+            // --- Navigation Button Listeners ---
+            navDataEntry.addEventListener('click', () => { showPage('content-data-entry'); playFeedbackSound('click'); });
+            navStudentDashboard.addEventListener('click', () => { showPage('content-student-dashboard'); playFeedbackSound('click'); });
+            navTeacherDashboard.addEventListener('click', () => { showPage('content-teacher-dashboard'); playFeedbackSound('click'); });
+
+            // --- Nama Pertandingan/Aktiviti Auto-capitalize ---
+            recordNamaPertandinganInput.addEventListener('input', (event) => {
+                event.target.value = event.target.value.toUpperCase();
+            });
+
+            // --- Temp Murid Select Handlers ---
+            tempKelasMuridInput.addEventListener('change', () => {
+                const selectedKelas = tempKelasMuridInput.value;
+                populateMuridDropdown(selectedKelas);
+                playFeedbackSound('click');
+            });
+
+
+            // --- Student List Management for Data Entry Form ---
+            // The updateAddedMuridList function is now defined in the global scope.
+            // This event listener remains here to trigger it when a murid is added.
+            addTempMuridButton.addEventListener('click', () => {
+                playFeedbackSound('click');
+                const nama = tempNamaMuridInput.value;
+                const kelas = tempKelasMuridInput.value;
+                const pencapaian = tempPencapaianMuridInput.value;
+
+                if (!nama || !kelas || !pencapaian) {
+                    showMessage("Sila pilih Nama Murid, Kelas, dan Pencapaian.", true);
+                    return;
+                }
+
+                const isDuplicate = currentStudentsForRecord.some(student => student.nama === nama);
+                if (isDuplicate) {
+                    showMessage(`Murid '${nama}' telah ditambah untuk rekod ini.`, true);
+                    return;
+                }
+
+                currentStudentsForRecord.push({ id: nama, nama, kelas, pencapaian });
+                updateAddedMuridList();
+
+                // Reset dropdowns after adding
+                tempKelasMuridInput.value = '';
+                tempNamaMuridInput.innerHTML = '<option value="">Pilih Murid</option>'; // Clear murid dropdown
+                tempPencapaianMuridInput.value = '';
+            });
+
+
+            // --- Carousel Navigation Event Listeners ---
+            prevRecordButton.addEventListener('click', () => {
+                playFeedbackSound('click');
+                if (currentRecordIndex > 0) {
+                    currentRecordIndex--;
+                    displayCurrentRecord();
+                }
+            });
+
+            nextRecordButton.addEventListener('click', () => {
+                playFeedbackSound('click');
+                if (currentRecordIndex < allRecords.length - 1) {
+                    currentRecordIndex++;
+                    displayCurrentRecord();
+                }
+            });
+            
+            // --- Add/Update New Record Functionality ---
+            addRecordButton.addEventListener('click', async () => {
+                playFeedbackSound('click');
+                const sesi = recordSesiInput.value.trim();
+                const namaGuru = recordNamaGuruInput.value.trim();
+                const namaPertandingan = recordNamaPertandinganInput.value.trim();
+                const kategori = kategoriSelect.value;
+                const peringkat = peringkatSelect.value;
+
+                if (!currentUser) {
+                    showMessage("Sila log masuk untuk menambah/mengemaskini rekod.", true);
+                    return;
+                }
+
+                if (!sesi || !namaGuru || !namaPertandingan || !kategori || !peringkat || currentStudentsForRecord.length === 0) {
+                    showMessage("Sila lengkapkan semua medan wajib (termasuk Kategori & Peringkat) dan tambah sekurang-kurangnya seorang murid.", true);
+                    return;
+                }
+
+                if (editingRecordId) {
+                    // Update existing record
+                    try {
+                        const recordRef = doc(db, "rekodPenyertaan", editingRecordId);
+                        await updateDoc(recordRef, {
+                            sesi: sesi,
+                            namaGuru: namaGuru,
+                            namaPertandingan: namaPertandingan,
+                            kategori: kategori,
+                            peringkat: peringkat,
+                            murid: currentStudentsForRecord,
+                            // timestamp and createdBy are typically not updated
+                        });
+                        showMessage("Rekod berjaya dikemaskini!");
+                        playFeedbackSound('success');
+                        cancelEdit(); // Reset form and buttons
+                    } catch (error) {
+                        console.error("Error updating PAJSK record: ", error);
+                        showMessage(`Gagal mengemaskini rekod: ${error.message}. Sila semak konsol untuk butiran.`, true);
+                        playFeedbackSound('error');
+                    }
+                } else {
+                    // Add new record
+                    try {
+                        await addDoc(collection(db, "rekodPenyertaan"), {
+                            sesi: sesi,
+                            namaGuru: namaGuru,
+                            namaPertandingan: namaPertandingan,
+                            kategori: kategori,
+                            peringkat: peringkat,
+                            murid: currentStudentsForRecord,
+                            userId: currentUser.uid, // Creator's UID
+                            createdBy: currentUser.email, // Creator's email
+                            timestamp: serverTimestamp() // Server timestamp for creation
+                        });
+                        showMessage("Rekod penyertaan berjaya ditambah!");
+                        playFeedbackSound('success');
+                        // Clear form fields
+                        recordSesiInput.value = new Date().getFullYear().toString();
+                        recordNamaPertandinganInput.value = '';
+                        kategoriSelect.value = '';
+                        peringkatSelect.value = '';
+
+                        currentStudentsForRecord = [];
+                        updateAddedMuridList();
+                        tempKelasMuridInput.value = '';
+                        tempNamaMuridInput.innerHTML = '<option value="">Pilih Murid</option>';
+                        tempPencapaianMuridInput.value = '';
+                    } catch (error) {
+                        console.error("Error adding PAJSK record: ", error);
+                        showMessage(`Gagal menambah rekod: ${error.message}. Sila semak konsol untuk butiran.`, true);
+                        playFeedbackSound('error');
+                    }
+                }
+            });
+
+            // --- Cancel Edit Functionality ---
+            cancelEditButton.addEventListener('click', () => {
+                playFeedbackSound('click');
+                cancelEdit();
+            });
+
+            function cancelEdit() {
+                editingRecordId = null; // Clear editing state
+                // Reset form fields
+                recordSesiInput.value = new Date().getFullYear().toString();
+                recordNamaPertandinganInput.value = '';
+                kategoriSelect.value = '';
+                peringkatSelect.value = '';
+                currentStudentsForRecord = [];
+                updateAddedMuridList();
+                tempKelasMuridInput.value = '';
+                tempNamaMuridInput.innerHTML = '<option value="">Pilih Murid</option>';
+                tempPencapaianMuridInput.value = '';
+
+                // Reset button text and hide cancel button
+                addRecordButton.textContent = 'Tambah Rekod Penyertaan';
+                addRecordButton.classList.remove('bg-green-600', 'hover:bg-green-700');
+                addRecordButton.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+                cancelEditButton.classList.add('hidden');
+                showMessage("Mod edit dibatalkan.");
+            }
+
+
+            applyFilterButton.addEventListener('click', () => { playFeedbackSound('click'); renderStudentDashboard(); }); // Re-render on filter click
+
+            closeStudentDetailsModalButton.addEventListener('click', () => {
+                playFeedbackSound('click');
+                studentDetailsModal.classList.remove('show');
+            });
+
+            filterSesiGuruSelect.addEventListener('change', () => { playFeedbackSound('click'); renderTeacherDashboard(); });
+            applyTeacherFilterButton.addEventListener('click', () => { playFeedbackSound('click'); renderTeacherDashboard(); });
+
+            closeTeacherRecordsModalButton.addEventListener('click', () => {
+                playFeedbackSound('click');
+                teacherRecordsModal.classList.remove('show');
+            });
+        }); // End of DOMContentLoaded
+
+        // --- onAuthStateChanged Listener (outside DOMContentLoaded as it needs to run early) ---
+        onAuthStateChanged(auth, async (user) => {
+            console.log("onAuthStateChanged triggered. User:", user ? user.email : "None"); // Debug log to see if it's hitting
+            try {
+                if (user) {
+                    currentUser = user;
+                    userEmailSpan.textContent = currentUser.email;
+                    // Initialize app data only after user is authenticated
+                    await fetchAllMuridData(); // Fetch murid data first
+                    await fetchAllGuruData(); // Fetch guru data
+                    await fetchAndSetGuruName(currentUser.email); // Set guru name based on logged-in email
+                    setupFirestoreListener(); // Set up real-time listener for records
+                    recordSesiInput.value = new Date().getFullYear().toString(); // Set default session year
+                    
+                    authSection.classList.add('hidden');
+                    mainAppSection.classList.remove('hidden');
+                    showPage('content-data-entry'); // Show data entry page by default
+                } else {
+                    currentUser = null;
+                    mainAppSection.classList.add('hidden');
+                    authSection.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error("Error during onAuthStateChanged processing:", error);
+                showMessage(`Ralat semasa memuatkan aplikasi: ${error.message}. Sila semak konsol peramban anda untuk detail.`, true);
+                // Ensure auth section is shown if app fails to load after initial check
+                mainAppSection.classList.add('hidden');
+                authSection.classList.remove('hidden');
+            } finally {
+                // Always hide loading indicator once initial state is determined
+                loadingIndicator.classList.add('hidden'); 
+            }
+        });
     </script>
 </body>
 </html>
